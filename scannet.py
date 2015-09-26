@@ -4,6 +4,10 @@
 
 import subprocess as sp
 
+def storeinsql(line):
+  print line
+  return
+
 def getuxtime():
   cmd = ["date", "+'%s'"]
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -135,12 +139,16 @@ if __name__ == '__main__':
   lenhost=0
   for idx,line in enumerate(lstOut):
     ip = line[0]
+    # get 4th element of IP
     lstOut[idx][8] = int(ip.split('.')[3])
+    # find length of longest hostname
     if len(lstOut[idx][1]) > lenhost:
       lenhost=len(lstOut[idx][1])
 
+  # Output the results
   lstOut = sorted(lstOut, key=getKey)
   for idx,line in enumerate(lstOut):
+    # ping the host
     ip = line[0]
     pong =  map(float,ping(ip,1))
     if pong[0] > 0:
@@ -150,6 +158,7 @@ if __name__ == '__main__':
     lstOut[idx][6] = pong[2]
     lstOut[idx][7] = pong[3]
 
+    storeinsql(line)
     spc0 = ' ' * ( 16 - len(line[0]) )
     spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
     spc2 = ' ' * ( 17 - len(line[3]) + 1 )
