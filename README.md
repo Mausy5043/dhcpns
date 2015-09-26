@@ -6,7 +6,7 @@ Assumptions:
 * installed packages: 
   * `traceroute`
   * `inetutils`
-  * mysql-client
+  * `mysql-client`
 
 Requires:
 * `arp`
