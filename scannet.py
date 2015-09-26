@@ -3,7 +3,6 @@
 # Scans the LAN for all hosts and reports some statistics about them
 
 import subprocess as sp
-import math
 
 def getuxtime():
   cmd = ["date", "+'%s'"]
