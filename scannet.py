@@ -5,7 +5,7 @@
 import subprocess as sp
 
 def storeinsql(line):
-  print line
+  #print line
   return
 
 def getuxtime():
