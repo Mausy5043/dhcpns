@@ -31,7 +31,7 @@ def getleases():
   return entries
 
 def getarp():
-  cmd = ["arp", "-a"]
+  cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
   if DEBUG:print err
