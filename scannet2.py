@@ -83,7 +83,7 @@ def getarp(lstOut):
 
   return lstOut
 
-def pingpong(lstOut)
+def pingpong(lstOut):
   # Ping the hosts
   lstOut = sorted(lstOut, key=getKey)
   for idx,line in enumerate(lstOut):
