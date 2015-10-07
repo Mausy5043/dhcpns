@@ -10,6 +10,10 @@ def storeinsql(line):
   #print line
   return
 
+def readsql():
+  #
+  return
+
 def getuxtime():
   cmd = ["date", "+'%s'"]
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -69,6 +73,13 @@ def getKey(item):
   return item[8]
 
 def red(name): print ("\033[91m {}\033[00m" .format(name))
+
+def syslog_trace(trace):
+	'''Log a python stack trace to syslog'''
+	log_lines = trace.split('\n')
+	for line in log_lines:
+		if len(line):
+			syslog.syslog(syslog.LOG_ALERT,line)
 
 if __name__ == '__main__':
   DEBUG = False
@@ -136,7 +147,7 @@ if __name__ == '__main__':
         lstOut[adx][3] = items[3]
         lstOut[adx][2] = items[0]
         lstOut[adx][9] = -1
-        colList = [ lstOut[i][0] for i in xrange(len(lstOut)) ]
+        colList = colList + [ lstOut[i][0] ]
         #if DEBUG:print "\t",colList
 
     lenhost=0
