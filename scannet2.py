@@ -102,23 +102,15 @@ def pingpong(lstOut):
   return lstOut
 
 def ping(ip,cnt):
-  # Is host alive?
-  cmd = ["ping", "-q", "-i", "0.5", "-c", "1", ip]
+  cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
-  testhost = output.splitlines()[-1]
 
-  if (len(testhost) <= 12) :
+  # get last line of output
+  line = output.splitlines()[-1]
+  # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
+  if (len(line) < 12) :
     line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
-  else:
-    # (len(testhost) > 12):
-    cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
-    ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-    output, err = ping.communicate()
-
-    # get last line of output
-    line = output.splitlines()[-1]
-    # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
 
   # get third field
   field3 = line.split()[3]
