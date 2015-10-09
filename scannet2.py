@@ -103,25 +103,21 @@ def ping(ip,cnt):
   output, err = ping.communicate()
   testhost = output.splitlines()[-1]
 
-  if (len(testhost) > 12):
+  if (len(testhost) <= 12) :
+    line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
+  else:
+    # (len(testhost) > 12):
     cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
     ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
     output, err = ping.communicate()
-    if DEBUG:print "!!! ",err," !!!"
-    if DEBUG:print output
 
     # get last line of output
     line = output.splitlines()[-1]
     # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
-    if DEBUG:print len(line)
-
-  if (len(line) =< 12) :
-    line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
 
   # get third field
   field3 = line.split()[3]
   # ==> 1.069/1.257/1.777/0.302
-  if DEBUG:print field3
   # split the field at "/"
   result = field3.split('/')
   # ===> ['1.036', '1.224', '1.496', '0.171']
