@@ -73,12 +73,12 @@ def getarp(lstOut):
       adx = colList.index(ip)
       # arp hostname
       lstOut[adx][2] = items[0]
-      lstOut[idx][8] = int(ip.split('.')[3])
+      lstOut[adx][8] = int(ip.split('.')[3])
     except ValueError:
       lstOut = lstOut + [[None] * listsize]
       adx = len(lstOut)-1
       lstOut[adx][0] = ip
-      lstOut[idx][8] = int(ip.split('.')[3])
+      lstOut[adx][8] = int(ip.split('.')[3])
       lstOut[adx][1] = items[0]
       lstOut[adx][3] = items[3]
       lstOut[adx][2] = items[0]
@@ -102,7 +102,7 @@ def pingpong(lstOut):
   return lstOut
 
 def ping(ip,cnt):
-  cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
+  cmd = ["ping", "-w", "2", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
 
@@ -157,13 +157,13 @@ if __name__ == '__main__':
     lstOut =  getarp(lstOut)
     if DEBUG:print len(lstOut),"\n"
 
-    lstOut = sorted(lstOut, key=getKey)
-
     lenhost=0
     for idx,line in enumerate(lstOut):
       if len(lstOut[idx][1]) > lenhost:
         lenhost=len(lstOut[idx][1])
     #{endfor}
+
+    lstOut = sorted(lstOut, key=getKey)
 
     lstOut = pingpong(lstOut)
 
