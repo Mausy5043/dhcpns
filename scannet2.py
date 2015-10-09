@@ -19,8 +19,6 @@ def getuxtime():
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = dt.communicate()
   entries = output.replace("'", "").splitlines()
-  #for line in entries:
-  # print line.split()
   return entries
 
 def getleases(listsize):
@@ -28,17 +26,17 @@ def getleases(listsize):
   cmd = ["cat", "/var/lib/misc/dnsmasq.leases"]
   cat = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = cat.communicate()
-  if DEBUG:print err
-  if DEBUG:print output
   entries = output.splitlines()
 
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
     if DEBUG:print idx,line
-    lstOut = lstOut + [[None * listsize]]
+    lstOut = lstOut + [[None] * listsize]
     items = line.split()
     # IP
-    lstOut[idx][0] = items[2]
+    ip = items[2]
+    lstOut[idx][0] = ip
+    lstOut[idx][8] = int(ip.split('.')[3])
     # hostname
     lstOut[idx][1] = items[3]
     # MAC
@@ -75,6 +73,7 @@ def getarp(lstOut):
       lstOut = lstOut + [[None] * listsize]
       adx = len(lstOut)-1
       lstOut[adx][0] = ip
+      lstOut[idx][8] = int(ip.split('.')[3])
       lstOut[adx][1] = items[0]
       lstOut[adx][3] = items[3]
       lstOut[adx][2] = items[0]
@@ -85,7 +84,6 @@ def getarp(lstOut):
 
 def pingpong(lstOut):
   # Ping the hosts
-  lstOut = sorted(lstOut, key=getKey)
   for idx,line in enumerate(lstOut):
     ip = line[0]
     pong =  map(float,ping(ip,1))
@@ -95,7 +93,8 @@ def pingpong(lstOut):
     lstOut[idx][5] = pong[1]
     lstOut[idx][6] = pong[2]
     lstOut[idx][7] = pong[3]
-    return lstOut
+
+  return lstOut
 
 def ping(ip,cnt):
   cmd = ["ping", "-i", "0.5", "-c", str(cnt), ip]
@@ -124,7 +123,8 @@ def ping(ip,cnt):
 def getKey(item):
   return item[8]
 
-def red(name): print ("\033[91m {}\033[00m" .format(name))
+def red(text):
+  print ("\033[91m {}\033[00m" .format(text))
 
 def syslog_trace(trace):
 	'''Log a python stack trace to syslog'''
@@ -140,7 +140,6 @@ if __name__ == '__main__':
     ux = getuxtime()
     ux = map(int,ux)[0]
 
-    # dimension the array
     # 0 = IP
     # 1 = hostname (dhcp lease)
     # 2 = hostname (arp)
@@ -157,16 +156,17 @@ if __name__ == '__main__':
     lstOut =  getarp(lstOut)
     if DEBUG:print len(lstOut),"\n"
 
-    lstOut = pingpong(lstOut)
-
     lenhost=0
     for idx,line in enumerate(lstOut):
-      ip = line[0]
+      #ip = line[0]
       # get 4th element of IP
-      lstOut[idx][8] = int(ip.split('.')[3])
+      #lstOut[idx][8] = int(ip.split('.')[3])
       # find length of longest hostname
       if len(lstOut[idx][1]) > lenhost:
         lenhost=len(lstOut[idx][1])
+
+    lstOut = sorted(lstOut, key=getKey)
+    lstOut = pingpong(lstOut)
 
       storeinsql(line)
       spc0 = ' ' * ( 16 - len(line[0]) )
@@ -176,7 +176,7 @@ if __name__ == '__main__':
   except Exception as e:
     if DEBUG:
       print("Unexpected error:")
-      print e.message
+      red(e.message)
     syslog.syslog(syslog.LOG_ALERT,e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
