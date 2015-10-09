@@ -125,13 +125,14 @@ def getKey(item):
 
 def red(text):
   print ("\033[91m {}\033[00m" .format(text))
+  return
 
 def syslog_trace(trace):
-	'''Log a python stack trace to syslog'''
-	log_lines = trace.split('\n')
-	for line in log_lines:
-		if len(line):
-			syslog.syslog(syslog.LOG_ALERT,line)
+  '''Log a python stack trace to syslog'''
+  log_lines = trace.split('\n')
+  for line in log_lines:
+    if len(line):
+      syslog.syslog(syslog.LOG_ALERT,line)
 
 if __name__ == '__main__':
   DEBUG = True
@@ -168,11 +169,11 @@ if __name__ == '__main__':
     lstOut = sorted(lstOut, key=getKey)
     lstOut = pingpong(lstOut)
 
-      storeinsql(line)
-      spc0 = ' ' * ( 16 - len(line[0]) )
-      spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
-      spc2 = ' ' * ( 17 - len(line[3]) + 1 )
-      print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+    storeinsql(line)
+    spc0 = ' ' * ( 16 - len(line[0]) )
+    spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
+    spc2 = ' ' * ( 17 - len(line[3]) + 1 )
+    print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
   except Exception as e:
     if DEBUG:
       print("Unexpected error:")
