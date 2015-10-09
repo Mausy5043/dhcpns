@@ -102,7 +102,7 @@ def pingpong(lstOut):
   return lstOut
 
 def ping(ip,cnt):
-  cmd = ["ping", "-w", "2", "-q", "-i", "0.5", "-c", str(cnt), ip]
+  cmd = ["ping", "-w", "1", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
 
