@@ -103,7 +103,7 @@ def ping(ip,cnt):
   output, err = ping.communicate()
   testhost = output.splitlines()[-1]
 
-  if (len(testhost) > 12)
+  if (len(testhost) > 12):
     cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
     ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
     output, err = ping.communicate()
