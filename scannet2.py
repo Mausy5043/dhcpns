@@ -114,16 +114,17 @@ def ping(ip,cnt):
     line = output.splitlines()[-1]
     # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
     if DEBUG:print len(line)
-    if (len(line) < 12) :
-      line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
 
-    # get third field
-    field3 = line.split()[3]
-    # ==> 1.069/1.257/1.777/0.302
-    if DEBUG:print field3
-    # split the field at "/"
-    result = field3.split('/')
-    # ===> ['1.036', '1.224', '1.496', '0.171']
+  if (len(line) =< 12) :
+    line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
+
+  # get third field
+  field3 = line.split()[3]
+  # ==> 1.069/1.257/1.777/0.302
+  if DEBUG:print field3
+  # split the field at "/"
+  result = field3.split('/')
+  # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
 def getKey(item):
