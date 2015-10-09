@@ -97,27 +97,33 @@ def pingpong(lstOut):
   return lstOut
 
 def ping(ip,cnt):
-  cmd = ["ping", "-i", "0.5", "-c", str(cnt), ip]
+  # Is host alive?
+  cmd = ["ping", "-q", "-i", "0.5", "-c", "1", ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-  # Get and parse output
   output, err = ping.communicate()
-  if DEBUG:print "!!! ",err," !!!"
-  if DEBUG:print output
+  testhost = output.splitlines()[-1]
 
-  # get last line of output
-  line = output.splitlines()[-1]
-  # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
-  if DEBUG:print len(line)
-  # get third field
-  if (len(line) < 12) :
-    line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
+  if (len(testhost) > 12)
+    cmd = ["ping", "-q", "-i", "0.5", "-c", str(cnt), ip]
+    ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
+    output, err = ping.communicate()
+    if DEBUG:print "!!! ",err," !!!"
+    if DEBUG:print output
 
-  field3 = line.split()[3]
-  # ==> 1.069/1.257/1.777/0.302
-  if DEBUG:print field3
-  # split the field at "/"
-  result = field3.split('/')
-  # ===> ['1.036', '1.224', '1.496', '0.171']
+    # get last line of output
+    line = output.splitlines()[-1]
+    # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
+    if DEBUG:print len(line)
+    if (len(line) < 12) :
+      line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
+
+    # get third field
+    field3 = line.split()[3]
+    # ==> 1.069/1.257/1.777/0.302
+    if DEBUG:print field3
+    # split the field at "/"
+    result = field3.split('/')
+    # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
 def getKey(item):
@@ -157,23 +163,24 @@ if __name__ == '__main__':
     lstOut =  getarp(lstOut)
     if DEBUG:print len(lstOut),"\n"
 
+    lstOut = sorted(lstOut, key=getKey)
+
     lenhost=0
     for idx,line in enumerate(lstOut):
-      #ip = line[0]
-      # get 4th element of IP
-      #lstOut[idx][8] = int(ip.split('.')[3])
-      # find length of longest hostname
       if len(lstOut[idx][1]) > lenhost:
         lenhost=len(lstOut[idx][1])
+    #{endfor}
 
-    lstOut = sorted(lstOut, key=getKey)
     lstOut = pingpong(lstOut)
 
-    storeinsql(line)
-    spc0 = ' ' * ( 16 - len(line[0]) )
-    spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
-    spc2 = ' ' * ( 17 - len(line[3]) + 1 )
-    print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+    for idx,line in enumerate(lstOut):
+      storeinsql(line)
+      spc0 = ' ' * ( 16 - len(line[0]) )
+      spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
+      spc2 = ' ' * ( 17 - len(line[3]) + 1 )
+      print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+    #{endfor}
+
   except Exception as e:
     if DEBUG:
       print("Unexpected error:")
@@ -181,3 +188,4 @@ if __name__ == '__main__':
     syslog.syslog(syslog.LOG_ALERT,e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
+  #{endtry}
