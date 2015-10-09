@@ -6,13 +6,13 @@ import syslog, traceback
 import subprocess as sp
 import MySQLdb as mdb
 
-def lstvssql(line):
+def lstvssql(lstOut):
   for idx,line in enumerate(lstOut):
     mac = line[3]
     #print mac+" ",
 
   #print "."
-  return
+  return lstOut
 
 def readsql():
   #
