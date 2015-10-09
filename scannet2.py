@@ -6,8 +6,12 @@ import syslog, traceback
 import subprocess as sp
 import MySQLdb as mdb
 
-def storeinsql(line):
-  #print line
+def lstvssql(line):
+  for idx,line in enumerate(lstOut):
+    mac = line[3]
+    #print mac+" ",
+
+  #print "."
   return
 
 def readsql():
@@ -36,7 +40,7 @@ def getleases(listsize):
     # IP
     ip = items[2]
     lstOut[idx][0] = ip
-    lstOut[idx][8] = int(ip.split('.')[3])
+    #lstOut[idx][8] = int(ip.split('.')[3])
     # hostname
     lstOut[idx][1] = items[3]
     # MAC
@@ -69,6 +73,7 @@ def getarp(lstOut):
       adx = colList.index(ip)
       # arp hostname
       lstOut[adx][2] = items[0]
+      lstOut[idx][8] = int(ip.split('.')[3])
     except ValueError:
       lstOut = lstOut + [[None] * listsize]
       adx = len(lstOut)-1
@@ -138,7 +143,7 @@ def syslog_trace(trace):
       syslog.syslog(syslog.LOG_ALERT,line)
 
 if __name__ == '__main__':
-  DEBUG = True
+  DEBUG = False
   try:
     print "*** ScanNet ***"
     ux = getuxtime()
@@ -170,8 +175,9 @@ if __name__ == '__main__':
 
     lstOut = pingpong(lstOut)
 
+    lstOut = lstvssql(lstOut)
+
     for idx,line in enumerate(lstOut):
-      storeinsql(line)
       spc0 = ' ' * ( 16 - len(line[0]) )
       spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
       spc2 = ' ' * ( 17 - len(line[3]) + 1 )
