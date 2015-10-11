@@ -24,7 +24,11 @@ def lstvssql(lstOut):
       s = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
       cur.execute(s)
       s = cur.fetchone()
-      print mac, s
+      print mac,
+      if s==None:
+        print "add"
+      else:
+        print "check"
       # MAC exists:
       # - update data in DB
       # - update hostname in lstOut is needed
