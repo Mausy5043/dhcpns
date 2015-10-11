@@ -3,7 +3,7 @@ executables for DHCP/DNS servers
 
 Assumptions:
 * using `dnsmasq`
-* installed packages: 
+* installed packages:
   * `traceroute`
   * `inetutils`
   * `mysql-client`

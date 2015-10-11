@@ -75,11 +75,11 @@ def getKey(item):
 def red(name): print ("\033[91m {}\033[00m" .format(name))
 
 def syslog_trace(trace):
-	'''Log a python stack trace to syslog'''
-	log_lines = trace.split('\n')
-	for line in log_lines:
-		if len(line):
-			syslog.syslog(syslog.LOG_ALERT,line)
+  '''Log a python stack trace to syslog'''
+  log_lines = trace.split('\n')
+  for line in log_lines:
+    if len(line):
+      syslog.syslog(syslog.LOG_ALERT,line)
 
 if __name__ == '__main__':
   DEBUG = False
