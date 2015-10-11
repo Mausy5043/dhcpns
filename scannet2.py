@@ -20,7 +20,6 @@ def lstvssql(lstOut):
       mac = line[3]
       # TO DO:
       # check if MAC exists in DB
-      ## SELECT * FROM lantbl WHERE mac = <mac>
       s = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
       cur.execute(s)
       s = cur.fetchone()
@@ -36,7 +35,7 @@ def lstvssql(lstOut):
         # - update hostname in lstOut is needed
         # - add lastseen date/time
 
-  except mdb.Error, e as e:
+  except mdb.Error, e:
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
 
