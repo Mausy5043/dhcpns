@@ -7,19 +7,40 @@ import subprocess as sp
 import MySQLdb as mdb
 
 def lstvssql(lstOut):
-  # connect to the database
-  con = mdb.connect(host='sql.lan', user='dhcpns', passwd='MySqlDb', db='dhcpnsdb')
-  # activate a cursor
-  cur = con.cursor()
-  # test the connection
-  cur.execute("SELECT VERSION()")
-  ver = cur.fetchone()
-  print ver
-  for idx,line in enumerate(lstOut):
-    mac = line[3]
-    #print mac+" ",
+  try:
+    # connect to the database
+    con = mdb.connect(host='sql.lan', user='dhcpns', passwd='MySqlDb', db='dhcpnsdb')
+    # activate a cursor
+    cur = con.cursor()
+    # test the connection
+    cur.execute("SELECT VERSION()")
+    ver = cur.fetchone()
+    print ver
+    for idx,line in enumerate(lstOut):
+      mac = line[3]
+      # TO DO:
+      # check if MAC exists in DB
+      ## SELECT * FROM lantbl WHERE mac = lstOut[3]
+      s = "SELECT * FROM lantbl WHERE mac=" + lstOut[3]
+      cur.execute(s)
+      s = cur.fetchone()
+      print mac, s
+      # MAC exists:
+      # - update data in DB
+      # - update hostname in lstOut is needed
+      # - add lastseen date/time
+      # MAC not found:
+      # - add data to DB
 
-  #print "."
+    #print "."
+
+  except mdb.Error, e:
+    print "Error %d: %s" % (e.args[0],e.args[1])
+    sys.exit(1)
+
+  finally:
+    if con:
+        con.close()
   return lstOut
 
 def readsql():
