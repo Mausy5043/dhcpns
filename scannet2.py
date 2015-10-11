@@ -82,7 +82,7 @@ def getarp(lstOut):
       lstOut[adx][1] = items[0]
       lstOut[adx][3] = items[3]
       lstOut[adx][2] = items[0]
-      lstOut[adx][9] = -1
+      lstOut[adx][9] = 0
       colList = colList + [ lstOut[i][0] ]
 
   return lstOut
@@ -98,6 +98,8 @@ def pingpong(lstOut):
     lstOut[idx][5] = pong[1]
     lstOut[idx][6] = pong[2]
     lstOut[idx][7] = pong[3]
+    if pong[0] == 0:
+      lstOut[idx][9] = -1
 
   return lstOut
 
