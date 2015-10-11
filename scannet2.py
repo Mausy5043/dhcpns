@@ -27,24 +27,23 @@ def lstvssql(lstOut):
       print mac,
       if s==None:
         print "add"
+        # MAC not found:
+        # - add data to DB
       else:
         print "check"
-      # MAC exists:
-      # - update data in DB
-      # - update hostname in lstOut is needed
-      # - add lastseen date/time
-      # MAC not found:
-      # - add data to DB
+        # MAC exists:
+        # - update data in DB
+        # - update hostname in lstOut is needed
+        # - add lastseen date/time
 
-    #print "."
-
-  except mdb.Error, e:
-    print "Error %d: %s" % (e.args[0],e.args[1])
-    sys.exit(1)
+  except mdb.Error, e as e:
+    syslog.syslog(syslog.LOG_ALERT, e.__doc__)
+    syslog_trace(traceback.format_exc())
 
   finally:
     if con:
         con.close()
+
   return lstOut
 
 def readsql():
