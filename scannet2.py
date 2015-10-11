@@ -2,7 +2,7 @@
 
 # Scans the LAN for all hosts and reports some statistics about them
 
-import syslog, traceback
+import sys, syslog, traceback
 import subprocess as sp
 import MySQLdb as mdb
 
@@ -20,8 +20,8 @@ def lstvssql(lstOut):
       mac = line[3]
       # TO DO:
       # check if MAC exists in DB
-      ## SELECT * FROM lantbl WHERE mac = lstOut[3]
-      s = "SELECT * FROM lantbl WHERE mac=" + lstOut[3]
+      ## SELECT * FROM lantbl WHERE mac = <mac>
+      s = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
       cur.execute(s)
       s = cur.fetchone()
       print mac, s
