@@ -7,6 +7,14 @@ import subprocess as sp
 import MySQLdb as mdb
 
 def lstvssql(lstOut):
+  # connect to the database
+  con = mdb.connect(host='sql.lan', user='dhcpns', passwd='MySqlDb', db='dhcpnsdb')
+  # activate a cursor
+  cur = con.cursor()
+  # test the connection
+  cur.execute("SELECT VERSION()")
+  ver = cur.fetchone()
+  print ver
   for idx,line in enumerate(lstOut):
     mac = line[3]
     #print mac+" ",
