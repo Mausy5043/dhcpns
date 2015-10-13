@@ -20,7 +20,7 @@ def lstvssql(lstOut):
     print ver, lastseen
     for idx,line in enumerate(lstOut):
       mac = line[3]
-      ipoctet4 = line[8].zfill(3)
+      ipoctet4 = str(line[8]).zfill(3)
       nodename = line[1]
       print ipoctet4
       #if nodename == "*"
@@ -51,7 +51,7 @@ def lstvssql(lstOut):
                 'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
                 'WHERE (mac = %s)')
             dat = ( lastseen, nodename, ipoctet4, mac )
-            print "update database ", dat
+            print "update database ", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
           else:
@@ -63,9 +63,9 @@ def lstvssql(lstOut):
       #{endif}
     #{endfor}
   except mdb.Error, e:
+    print e.__doc__
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
-
   finally:
     if con:
         cur.close()
