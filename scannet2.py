@@ -30,15 +30,15 @@ def lstvssql(lstOut):
         cmd = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
         cur.execute(cmd)
         rsl = cur.fetchone()
-        print mac,
         if (rsl == None):
           #print "add"
           # MAC not found:
           cmd = ('INSERT INTO lantbl '
             '(mac, ipoctet4, lastseen, nodename) '
-            'VALUES ')
+            'VALUES (%s, %s, %s, %s)')
+          dat = ( mac, ipoctet4, lastseen, nodename )
           # - add data to DB
-          print cmd
+          print ".........", cmd, dat
         else:
           print "check"
           # MAC exists:
