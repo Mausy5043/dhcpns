@@ -4,10 +4,12 @@
 
 import sys, syslog, traceback
 import subprocess as sp
+import datetime
 import MySQLdb as mdb
 
 def lstvssql(lstOut):
   try:
+    lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
     con = mdb.connect(host='sql.lan', user='dhcpns', passwd='MySqlDb', db='dhcpnsdb')
     # activate a cursor
@@ -15,25 +17,34 @@ def lstvssql(lstOut):
     # test the connection
     cur.execute("SELECT VERSION()")
     ver = cur.fetchone()
-    print ver
+    print ver, lastseen
     for idx,line in enumerate(lstOut):
+      print line[1], line[2], line[3]
       mac = line[3]
+      ipoctet4 = line[8]
+      nodename = line[1]
+      #if nodename == "*"
       # TO DO:
       # check if MAC exists in DB
-      s = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
-      cur.execute(s)
-      s = cur.fetchone()
-      print mac,
-      if s==None:
-        print "add"
-        # MAC not found:
-        # - add data to DB
-      else:
-        print "check"
-        # MAC exists:
-        # - update data in DB
-        # - update hostname in lstOut is needed
-        # - add lastseen date/time
+      if (len(mac) == 17):
+        cmd = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
+        cur.execute(cmd)
+        rsl = cur.fetchone()
+        print mac,
+        if (rsl == None):
+          #print "add"
+          # MAC not found:
+          cmd = ('INSERT INTO lantbl '
+            '(mac, ipoctet4, lastseen, nodename) '
+            'VALUES ')
+          # - add data to DB
+          print cmd
+        else:
+          print "check"
+          # MAC exists:
+          # - update data in DB
+          # - update hostname in lstOut is needed
+          # - add lastseen date/time
 
   except mdb.Error, e:
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
