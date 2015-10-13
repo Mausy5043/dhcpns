@@ -40,7 +40,7 @@ def lstvssql(lstOut):
             dat = ( mac, ipoctet4, lastseen, nodename )
             # - add data to DB
             print ".........", cmd, dat
-            cur.execute(cmd), dat)
+            cur.execute(cmd, dat)
             con.commit()
         else:
           print "check"
