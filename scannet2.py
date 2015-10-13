@@ -42,7 +42,6 @@ def lstvssql(lstOut):
             con.commit()
           #{endif}
         else:
-          print "check"
           # MAC found & host is pingable
           if (line[5] != 0):
             # - update data in DB
@@ -51,11 +50,12 @@ def lstvssql(lstOut):
                 'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
                 'WHERE (mac = %s)')
             dat = ( lastseen, nodename, ipoctet4, mac )
+              print "update database ", dat
             cur.execute(cmd, dat)
             con.commit()
           else:
             # - update hostname in lstOut is needed
-            print "update", rsl
+            print "update info ", rsl
 
           #{endif}
         #{endif}
