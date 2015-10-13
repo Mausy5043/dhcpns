@@ -22,9 +22,6 @@ def lstvssql(lstOut):
       mac = line[3]
       ipoctet4 = str(line[8]).zfill(3)
       nodename = line[1]
-      print ipoctet4
-      #if nodename == "*"
-      # TO DO:
       # check if MAC exists in DB
       if (len(mac) == 17):
         cmd = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
@@ -38,7 +35,7 @@ def lstvssql(lstOut):
               'VALUES (%s, %s, %s, %s)')
             dat = ( mac, ipoctet4, lastseen, nodename )
             # - add data to DB
-            print ".........", cmd, dat
+            #print ".........", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
           #{endif}
@@ -51,7 +48,7 @@ def lstvssql(lstOut):
                 'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
                 'WHERE (mac = %s)')
             dat = ( lastseen, nodename, ipoctet4, mac )
-            print "update database ", cmd, dat
+            #print "update database ", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
           else:
