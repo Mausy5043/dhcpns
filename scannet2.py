@@ -20,8 +20,9 @@ def lstvssql(lstOut):
     print ver, lastseen
     for idx,line in enumerate(lstOut):
       mac = line[3]
-      ipoctet4 = line[8]
+      ipoctet4 = line[8].zfill(3)
       nodename = line[1]
+      print ipoctet4
       #if nodename == "*"
       # TO DO:
       # check if MAC exists in DB
