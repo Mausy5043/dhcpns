@@ -33,6 +33,11 @@ def lstvssql(lstOut):
         if (rsl == None):
           #print "add"
           # MAC not found:
+          if (line[5] == 0):
+            # MAC known but host not present.
+            print "Not adding ", line[1]
+          if (line[2] == "?"):
+            print "hostname unknown"
           cmd = ('INSERT INTO lantbl '
             '(mac, ipoctet4, lastseen, nodename) '
             'VALUES (%s, %s, %s, %s)')
