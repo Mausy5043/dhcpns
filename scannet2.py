@@ -45,8 +45,8 @@ def lstvssql(lstOut):
             # - update data in DB
             # - add lastseen date/time
             cmd = ('UPDATE lantbl '
-                'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
-                'WHERE (mac = %s)')
+                'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
+                'WHERE mac = %s ')
             dat = ( lastseen, nodename, ipoctet4, mac )
             #print "update database ", cmd, dat
             cur.execute(cmd, dat)
