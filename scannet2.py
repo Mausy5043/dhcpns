@@ -50,7 +50,7 @@ def lstvssql(lstOut):
                 'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
                 'WHERE (mac = %s)')
             dat = ( lastseen, nodename, ipoctet4, mac )
-              print "update database ", dat
+            print "update database ", dat
             cur.execute(cmd, dat)
             con.commit()
           else:
