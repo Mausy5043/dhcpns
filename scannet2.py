@@ -19,7 +19,6 @@ def lstvssql(lstOut):
     ver = cur.fetchone()
     print ver, lastseen
     for idx,line in enumerate(lstOut):
-      print line[1], line[2], line[3]
       mac = line[3]
       ipoctet4 = line[8]
       nodename = line[1]
@@ -31,7 +30,6 @@ def lstvssql(lstOut):
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl == None):
-          #print "add"
           # MAC not found & host is pingable:
           if (line[5] != 0):
             cmd = ('INSERT INTO lantbl '
@@ -44,10 +42,19 @@ def lstvssql(lstOut):
             con.commit()
         else:
           print "check"
-          # MAC exists:
-          # - update data in DB
-          # - update hostname in lstOut is needed
-          # - add lastseen date/time
+          # MAC found & host is pingable
+          if (line[5] != 0):
+            # - update data in DB
+            # - add lastseen date/time
+            cmd = ('UPDATE lantbl '
+                'SET (lastseen = %s, nodename = %s, ipoctet4 = %s) '
+                'WHERE (mac = %s)')
+            dat = ( lastseen, nodename, ipoctet4, mac )
+            cur.execute(cmd, dat)
+            con.commit()
+          else:
+            # - update hostname in lstOut is needed
+
 
   except mdb.Error, e:
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
