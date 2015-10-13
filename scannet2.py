@@ -40,6 +40,7 @@ def lstvssql(lstOut):
             print ".........", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
+          #{endif}
         else:
           print "check"
           # MAC found & host is pingable
@@ -54,8 +55,12 @@ def lstvssql(lstOut):
             con.commit()
           else:
             # - update hostname in lstOut is needed
+            print "update", rsl
 
-
+          #{endif}
+        #{endif}
+      #{endif}
+    #{endfor}
   except mdb.Error, e:
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
@@ -64,7 +69,7 @@ def lstvssql(lstOut):
     if con:
         cur.close()
         con.close()
-
+  #{endtry}
   return lstOut
 
 def readsql():
