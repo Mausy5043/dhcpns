@@ -24,39 +24,43 @@ def lstvssql(lstOut):
       nodename = line[1]
       # check if MAC exists in DB
       if (len(mac) == 17):
+        # MAC is valid: search for it in the DB
         cmd = ('SELECT * '
           'FROM lantbl '
           'WHERE mac="' + mac +'"' )
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl == None):
-          # MAC not found & host is pingable:
+          # MAC is not found
           if (line[5] != 0):
+            # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
               '(mac, ipoctet4, lastseen, nodename) '
               'VALUES (%s, %s, %s, %s)')
             dat = ( mac, ipoctet4, lastseen, nodename )
-            # - add data to DB
-            #print ".........", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
+          else:
+            # & host is not pingable
+            print "MAC exists not in DB; not pingable. This should never happen!"
           #{endif}
         else:
-          # MAC found & host is pingable
+          # MAC is found
           if (line[5] != 0):
-            # - update data in DB
-            # - add lastseen date/time
+            # & host is pingable -> update data in DB
             cmd = ('UPDATE lantbl '
                 'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                 'WHERE mac = %s ')
             dat = ( lastseen, nodename, ipoctet4, mac )
-            #print "update database ", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
-      else:
-        # - update hostname in lstOut is needed
-        print "update info ", rsl
-
+          else:
+            # & host is not pingable
+            print "exists in DB; not pingable. Local data may not be up-to-date."
+            print "update info ", mac, rsl
+            print line[1],line[2]
+            line[1] = rsl[3]
+            line[2] = rsl[3]
           #{endif}
         #{endif}
       #{endif}
