@@ -53,9 +53,9 @@ def lstvssql(lstOut):
             #print "update database ", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
-        else:
-          # - update hostname in lstOut is needed
-          print "update info ", rsl
+      else:
+        # - update hostname in lstOut is needed
+        print "update info ", rsl
 
           #{endif}
         #{endif}
