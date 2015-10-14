@@ -43,6 +43,7 @@ def lstvssql(lstOut):
           else:
             # & host is not pingable
             print "MAC exists not in DB; not pingable. This should never happen!"
+            print mac
           #{endif}
         else:
           # MAC is found
