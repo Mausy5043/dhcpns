@@ -40,10 +40,6 @@ def lstvssql(lstOut):
             dat = ( mac, ipoctet4, lastseen, nodename )
             cur.execute(cmd, dat)
             con.commit()
-          else:
-            # & host is not pingable
-            print "MAC exists not in DB; not pingable. This should never happen!"
-            print mac
           #{endif}
         else:
           # MAC is found
@@ -56,7 +52,7 @@ def lstvssql(lstOut):
             cur.execute(cmd, dat)
             con.commit()
           else:
-            # & host is not pingable
+            # & host is not pingable -> update local data (arp-data may be stale)
             print "exists in DB; not pingable. Local data may not be up-to-date."
             print "update info ", mac, rsl
             print line[1],line[2]
