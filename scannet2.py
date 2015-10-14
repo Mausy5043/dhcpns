@@ -24,7 +24,9 @@ def lstvssql(lstOut):
       nodename = line[1]
       # check if MAC exists in DB
       if (len(mac) == 17):
-        cmd = 'SELECT * FROM lantbl WHERE mac="' + mac +'"'
+        cmd = ('SELECT * '
+          'FROM lantbl '
+          'WHERE mac="' + mac +'"' )
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl == None):
@@ -51,9 +53,9 @@ def lstvssql(lstOut):
             #print "update database ", cmd, dat
             cur.execute(cmd, dat)
             con.commit()
-          else:
-            # - update hostname in lstOut is needed
-            print "update info ", rsl
+        else:
+          # - update hostname in lstOut is needed
+          print "update info ", rsl
 
           #{endif}
         #{endif}
@@ -71,7 +73,7 @@ def lstvssql(lstOut):
   return lstOut
 
 def readsql():
-  #
+  # SELECT * FROM lantbl ORDER BY (ipoctet4);
   return
 
 def getuxtime():
