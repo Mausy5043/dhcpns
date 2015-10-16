@@ -56,8 +56,8 @@ def lstvssql(lstOut):
             #print "exists in DB; not pingable. Local data may not be up-to-date."
             #print "update info ", mac, rsl
             #print line[1],line[2]
-            line[1] = "*" + rsl[3]
-            line[2] = "*" + rsl[3]
+            line[1] = "* " + rsl[3]
+            line[2] = "* " + rsl[3]
 
           #sometimes nodename = "?" and mac = "<incomplete>"
           #then lookup the last user of the IP-address
@@ -223,17 +223,18 @@ if __name__ == '__main__':
     lstOut =  getarp(lstOut)
     if DEBUG:print len(lstOut),"\n"
 
-    lenhost=0
-    for idx,line in enumerate(lstOut):
-      if len(lstOut[idx][1]) > lenhost:
-        lenhost=len(lstOut[idx][1])
-    #{endfor}
-
     lstOut = sorted(lstOut, key=getKey)
 
     lstOut = pingpong(lstOut)
 
     lstOut = lstvssql(lstOut)
+
+    # determine fieldlength of hostname for printing.
+    lenhost=0
+    for idx,line in enumerate(lstOut):
+      if len(lstOut[idx][1]) > lenhost:
+        lenhost=len(lstOut[idx][1])
+    #{endfor}
 
     for idx,line in enumerate(lstOut):
       spc0 = ' ' * ( 16 - len(line[0]) )
