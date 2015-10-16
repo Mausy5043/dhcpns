@@ -53,11 +53,15 @@ def lstvssql(lstOut):
             con.commit()
           else:
             # & host is not pingable -> update local data (arp-data may be stale)
-            print "exists in DB; not pingable. Local data may not be up-to-date."
-            print "update info ", mac, rsl
-            print line[1],line[2]
-            line[1] = rsl[3]
-            line[2] = rsl[3]
+            #print "exists in DB; not pingable. Local data may not be up-to-date."
+            #print "update info ", mac, rsl
+            #print line[1],line[2]
+            line[1] = "*" + rsl[3]
+            line[2] = "*" + rsl[3]
+
+          #sometimes nodename = "?" and mac = "<incomplete>"
+          #then lookup the last user of the IP-address
+
           #{endif}
         #{endif}
       #{endif}
