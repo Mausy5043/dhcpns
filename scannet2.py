@@ -26,28 +26,29 @@ def lstvssql(lstOut):
       if (len(mac) == 17):
         # MAC is valid: search for it in the DB
         cmd = ('SELECT * '
-          'FROM lantbl '
-          'WHERE mac="' + mac +'"' )
+                'FROM lantbl '
+                'WHERE mac="' + mac +'"' )
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl == None):
-          # MAC is not found
+          # MAC is not found in db
           if (line[5] != 0):
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
-              '(mac, ipoctet4, lastseen, nodename) '
-              'VALUES (%s, %s, %s, %s)')
+                    '(mac, ipoctet4, lastseen, nodename) '
+                    'VALUES (%s, %s, %s, %s)')
             dat = ( mac, ipoctet4, lastseen, nodename )
+            syslog.syslog(syslog.LOG_NOTICE, "INSERTed " + mac + " @ " + nodename)
             cur.execute(cmd, dat)
             con.commit()
           #{endif}
         else:
-          # MAC is found
+          # MAC is found in db
           if (line[5] != 0):
             # & host is pingable -> update data in DB
             cmd = ('UPDATE lantbl '
-                'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
-                'WHERE mac = %s ')
+                    'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
+                    'WHERE mac = %s ')
             dat = ( lastseen, nodename, ipoctet4, mac )
             cur.execute(cmd, dat)
             con.commit()
@@ -58,12 +59,10 @@ def lstvssql(lstOut):
             #print line[1],line[2]
             line[1] = "* " + rsl[3]
             line[2] = "* " + rsl[3]
-
-          #sometimes nodename = "?" and mac = "<incomplete>"
-          #then lookup the last user of the IP-address
-
           #{endif}
         #{endif}
+        #sometimes nodename = "?" and mac = "<incomplete>"
+        #then lookup the last user of the IP-address
       #{endif}
     #{endfor}
   except mdb.Error, e:
