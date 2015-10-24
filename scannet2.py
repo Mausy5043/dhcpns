@@ -61,7 +61,7 @@ def lstvssql(lstOut):
             line[2] = "* " + rsl[3]
           #{endif}
         #{endif}
-      else
+      else:
         #sometimes nodename = "?" and mac = "<incomplete>"
         #then lookup the last user of the IP-address
         print nodename, mac, ipoctet4
