@@ -63,8 +63,20 @@ def lstvssql(lstOut):
         #{endif}
       else:
         #sometimes nodename = "?" and mac = "<incomplete>"
-        #then lookup the last user of the IP-address
-        print nodename, mac, ipoctet4
+        if (nodename == "?"):
+          #then lookup the last user of the IP-address
+          cmd = ('SELECT * '
+                  'FROM lantbl '
+                  'WHERE ipoctet4="' + ipoctet4 +'"' )
+          cur.execute(cmd)
+          rsl = cur.fetchone()
+          # example output
+          # rsl <= ('00:00:00:00:00:00', '182', datetime.datetime(2015, 10, 18, 14, 45, 26), 'hostname')
+          line[1] = "-" + rsl[3]
+          line[2] = "-" + rsl[3]
+          line[3] = "-" + rsl[0]
+        else:
+          print nodename, mac, ipoctet4
       #{endif}
     #{endfor}
   except mdb.Error, e:
