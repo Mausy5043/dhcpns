@@ -222,6 +222,15 @@ def syslog_trace(trace):
 
 if __name__ == '__main__':
   DEBUG = False
+  lsa = len(sys.argv)
+  if (lsa == 1):
+    sw = 2
+  else:
+    sw = 2
+    if sys.argv[1] == '-t'
+      sw = 1
+    #{endif}
+  #{endif}
   try:
     ux = getuxtime()
     ux = map(int,ux)[0]
@@ -260,8 +269,10 @@ if __name__ == '__main__':
       spc0 = ' ' * ( 16 - len(line[0]) )
       spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
       spc2 = ' ' * ( 17 - len(line[3]) + 1 )
-      print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
-      print line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10]
+      if (sw == 1):
+        print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+      if (sw == 2):
+        print line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10]
     #{endfor}
 
   except Exception as e:
