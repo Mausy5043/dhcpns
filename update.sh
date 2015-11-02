@@ -1,6 +1,8 @@
 #! /bin/bash
 
-branch=$(cat ~/.dhcpns.branch)
+ME=$(whoami)
+
+branch=$(cat /home/$ME/.dhcpns.branch)
 git pull
 git fetch origin
 git checkout $branch && git reset --hard origin/$branch && git clean -f -d
