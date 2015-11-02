@@ -227,7 +227,7 @@ if __name__ == '__main__':
     sw = 2
   else:
     sw = 2
-    if sys.argv[1] == '-t'
+    if (sys.argv[1] == '-t'):
       sw = 1
     #{endif}
   #{endif}
