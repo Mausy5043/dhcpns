@@ -111,14 +111,9 @@ def getleases(listsize):
   lstOut = []
   fi = "/var/lib/misc/dnsmasq.leases"
   f    = file(fi,'r')
-  cat = f.read().strip('\n').replace(" ",", ").replace("/",", ")
+  cat = f.read().strip('\n')
   f.close()
-  if DEBUG:print cat
-  
-  cmd = ["cat", fi]
-  cat = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-  output, err = cat.communicate()
-  entries = output.splitlines()
+  entries = cat.splitlines()
   if DEBUG:print entries
 
   # fill the array with datafrom the leases
