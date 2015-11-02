@@ -17,7 +17,8 @@ def lstvssql(lstOut):
     # test the connection
     cur.execute("SELECT VERSION()")
     ver = cur.fetchone()
-    print ver, lastseen
+    print "SQL database version: ", ver
+    print "Scan performed on:    ", lastseen
     for idx,line in enumerate(lstOut):
       mac = line[3]
       ipoctet4 = str(line[8]).zfill(3)
@@ -41,6 +42,7 @@ def lstvssql(lstOut):
             syslog.syslog(syslog.LOG_NOTICE, "INSERTed " + mac + " @ " + nodename)
             cur.execute(cmd, dat)
             con.commit()
+            line[10] = lastseen
           #{endif}
         else:
           # MAC is found in db
@@ -52,6 +54,7 @@ def lstvssql(lstOut):
             dat = ( lastseen, nodename, ipoctet4, mac )
             cur.execute(cmd, dat)
             con.commit()
+            line[10] = lastseen
           else:
             # & host is not pingable -> update local data (arp-data may be stale)
             #print "exists in DB; not pingable. Local data may not be up-to-date."
@@ -59,6 +62,7 @@ def lstvssql(lstOut):
             #print line[1],line[2]
             line[1] = "* " + rsl[3]
             line[2] = "* " + rsl[3]
+            line[10] = rsl[2]
           #{endif}
         #{endif}
       else:
@@ -75,6 +79,7 @@ def lstvssql(lstOut):
           line[1] = "-" + rsl[3]
           line[2] = "-" + rsl[3]
           line[3] = "-" + rsl[0]
+          line[10] = rsl[2]
         else:
           print nodename, mac, ipoctet4
       #{endif}
@@ -101,6 +106,7 @@ def getuxtime():
   entries = output.replace("'", "").splitlines()
   return entries
 
+# read the contents /var/lib/misc/dnsmasq.leases
 def getleases(listsize):
   lstOut = []
   cmd = ["cat", "/var/lib/misc/dnsmasq.leases"]
@@ -126,6 +132,7 @@ def getleases(listsize):
 
   return lstOut
 
+# get the contnets of the arp table (arp -a)
 def getarp(lstOut):
   listsize = len(lstOut[0])
   cmd = ["/usr/sbin/arp", "-a"]
@@ -163,8 +170,8 @@ def getarp(lstOut):
 
   return lstOut
 
+# ping each host
 def pingpong(lstOut):
-  # Ping the hosts
   for idx,line in enumerate(lstOut):
     ip = line[0]
     pong =  map(float,ping(ip,1))
@@ -216,7 +223,6 @@ def syslog_trace(trace):
 if __name__ == '__main__':
   DEBUG = False
   try:
-    print "*** ScanNet ***"
     ux = getuxtime()
     ux = map(int,ux)[0]
 
@@ -230,17 +236,18 @@ if __name__ == '__main__':
     # 7 = ping stdev
     # 8 = IP(...4)
     # 9 = Time to release (minutes)
-    lstOut = getleases(10)
+    #10 = lastseen
+    lstOut = getleases(11)  # parameter is size of the array
     if DEBUG:print len(lstOut),"\n"
 
-    lstOut =  getarp(lstOut)
+    lstOut =  getarp(lstOut) # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:print len(lstOut),"\n"
 
-    lstOut = sorted(lstOut, key=getKey)
+    lstOut = sorted(lstOut, key=getKey) # sort the list by IP octet 4
 
-    lstOut = pingpong(lstOut)
+    lstOut = pingpong(lstOut) # search for signs of life
 
-    lstOut = lstvssql(lstOut)
+    lstOut = lstvssql(lstOut) # compare the list with the database
 
     # determine fieldlength of hostname for printing.
     lenhost=0
@@ -254,6 +261,7 @@ if __name__ == '__main__':
       spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
       spc2 = ' ' * ( 17 - len(line[3]) + 1 )
       print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+      print line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10]
     #{endfor}
 
   except Exception as e:
