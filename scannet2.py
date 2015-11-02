@@ -109,10 +109,17 @@ def getuxtime():
 # read the contents /var/lib/misc/dnsmasq.leases
 def getleases(listsize):
   lstOut = []
-  cmd = ["cat", "/var/lib/misc/dnsmasq.leases"]
+  fi = "/var/lib/misc/dnsmasq.leases"
+  f    = file(fi,'r')
+  cat = f.read().strip('\n').replace(" ",", ").replace("/",", ")
+  f.close()
+  if DEBUG:print cat
+  
+  cmd = ["cat", fi]
   cat = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = cat.communicate()
   entries = output.splitlines()
+  if DEBUG:print entries
 
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
