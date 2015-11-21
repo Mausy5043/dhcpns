@@ -76,10 +76,11 @@ def lstvssql(lstOut):
           rsl = cur.fetchone()
           # example output
           # rsl <= ('00:00:00:00:00:00', '182', datetime.datetime(2015, 10, 18, 14, 45, 26), 'hostname')
-          line[1] = "-" + rsl[3]
-          line[2] = "-" + rsl[3]
-          line[3] = "-" + rsl[0]
-          line[10] = rsl[2]
+          if (rsl != None):
+            line[1] = "-" + rsl[3]
+            line[2] = "-" + rsl[3]
+            line[3] = "-" + rsl[0]
+            line[10] = rsl[2]
         else:
           print nodename, mac, ipoctet4
       #{endif}
