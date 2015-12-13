@@ -11,7 +11,7 @@ def lstvssql(lstOut):
   try:
     lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
-    con = mdb.connect(host='sql.lan', user='dhcpns', passwd='MySqlDb', db='dhcpnsdb')
+    con = mdb.connect(host='sql.lan', db='dhcpnsdb', read_default_file='~/.my.cnf')
     # activate a cursor
     cur = con.cursor()
     # test the connection
