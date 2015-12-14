@@ -4,12 +4,14 @@
 
 import sys, syslog, traceback
 import subprocess as sp
-import datetime
+#import datetime
+import time
 import MySQLdb as mdb
 
 def lstvssql(lstOut):
   try:
-    lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    #lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
     con = mdb.connect(host='sql.lan', db='dhcpnsdb', read_default_file='~/.my.cnf')
     # activate a cursor
