@@ -1,13 +1,11 @@
 #! /bin/bash
 
-ME=$(whoami)
-
-branch=$(cat /home/$ME/.dhcpns.branch)
-pushd /home/$ME/dhcpns
+branch=$(cat "$HOME/.dhcpns.branch")
+pushd "$HOME/dhcpns"
   git pull
   git fetch origin
-  git checkout $branch && git reset --hard origin/$branch && git clean -f -d
+  git checkout "$branch" && git reset --hard "origin/$branch" && git clean -f -d
 
   # Set permissions
-  chmod -R 744 *
+  chmod -R 744 "*"
 popd
