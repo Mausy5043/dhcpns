@@ -98,10 +98,6 @@ def lstvssql(lstOut):
   #{endtry}
   return lstOut
 
-def readsql():
-  # SELECT * FROM lantbl ORDER BY (ipoctet4);
-  return
-
 def getuxtime():
   cmd = ["date", "+'%s'"]
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -216,10 +212,9 @@ def getKey(item):
 
 def red(text):
   print ("\033[91m {}\033[00m" .format(text))
-  return
 
 def syslog_trace(trace):
-  '''Log a python stack trace to syslog'''
+  # Log a python stack trace to syslog
   log_lines = trace.split('\n')
   for line in log_lines:
     if len(line):
