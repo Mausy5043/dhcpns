@@ -7,5 +7,5 @@ pushd "$HOME/dhcpns"
   git checkout "$branch" && git reset --hard "origin/$branch" && git clean -f -d
 
   # Set permissions
-  chmod -R 744 "*"
+  chmod -R 744 ./*
 popd
