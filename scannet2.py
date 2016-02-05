@@ -118,7 +118,7 @@ def getleases(listsize):
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
     if DEBUG:print idx,line
-    lstOut = lstOut + [[None] * listsize]
+    lstOut.extend([[None] * listsize])
     items = line.split()
     # IP
     ip = items[2]
@@ -159,7 +159,7 @@ def getarp(lstOut):
       lstOut[adx][2] = items[0]
       lstOut[adx][8] = int(ip.split('.')[3])
     except ValueError:
-      lstOut = lstOut + [[None] * listsize]
+      lstOut.extend([[None] * listsize])
       adx = len(lstOut)-1
       lstOut[adx][0] = ip
       lstOut[adx][8] = int(ip.split('.')[3])
@@ -167,7 +167,7 @@ def getarp(lstOut):
       lstOut[adx][3] = items[3]
       lstOut[adx][2] = items[0]
       lstOut[adx][9] = -1
-      colList = colList + [ lstOut[i][0] ]
+      colList.extend([ lstOut[i][0] ])
 
   return lstOut
 
