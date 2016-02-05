@@ -1,0 +1,6 @@
+# Ignore these files
+# https://www.quantifiedcode.com/app/
+*.sh
+*.gp
+*.md
+*.txt
