@@ -4,10 +4,10 @@
 
 import sys, syslog, traceback
 import subprocess as sp
-#import datetime
 import time
 import MySQLdb as mdb
 
+# compare the gathered data to what is in the database
 def lstvssql(lstOut):
   try:
     #lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -98,6 +98,7 @@ def lstvssql(lstOut):
   #{endtry}
   return lstOut
 
+# read the system UN*X epoch
 def getuxtime():
   cmd = ["date", "+'%s'"]
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -133,7 +134,7 @@ def getleases(listsize):
 
   return lstOut
 
-# get the contnets of the arp table (arp -a)
+# get the contents of the arp table (arp -a)
 def getarp(lstOut):
   listsize = len(lstOut[0])
   cmd = ["/usr/sbin/arp", "-a"]
@@ -171,7 +172,7 @@ def getarp(lstOut):
 
   return lstOut
 
-# ping each host
+# ping each host in the list and store the timings
 def pingpong(lstOut):
   for idx,line in enumerate(lstOut):
     ip = line[0]
@@ -188,6 +189,7 @@ def pingpong(lstOut):
 
   return lstOut
 
+# ping the given `ip`  `cnt` times and return responsetimes
 def ping(ip,cnt):
   cmd = ["ping", "-w", "1", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -207,14 +209,16 @@ def ping(ip,cnt):
   # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
+# 'row' in list to sort by
 def getkey(item):
   return item[8]
 
+# format a string to make it show red on an ANSI terminal
 def red(text):
   print ("\033[91m {}\033[00m" .format(text))
 
+# Log a python stack trace to syslog
 def syslog_trace(trace):
-  # Log a python stack trace to syslog
   log_lines = trace.split('\n')
   for line in log_lines:
     if line:
