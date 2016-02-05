@@ -33,7 +33,7 @@ def lstvssql(lstOut):
                 'WHERE mac="' + mac +'"' )
         cur.execute(cmd)
         rsl = cur.fetchone()
-        if (rsl == None):
+        if (rsl is None):
           # MAC is not found in db
           if (line[5] != 0):
             # & host is pingable -> new host, so add it to the DB
@@ -78,7 +78,7 @@ def lstvssql(lstOut):
           rsl = cur.fetchone()
           # example output
           # rsl <= ('00:00:00:00:00:00', '182', datetime.datetime(2015, 10, 18, 14, 45, 26), 'hostname')
-          if (rsl != None):
+          if (rsl is not None):
             line[1] = "-" + rsl[3]
             line[2] = "-" + rsl[3]
             line[3] = "-" + rsl[0]
@@ -183,7 +183,7 @@ def pingpong(lstOut):
     lstOut[idx][6] = pong[2]
     lstOut[idx][7] = pong[3]
     if pong[0] == 0:
-      if lstOut[idx][9] == None:
+      if lstOut[idx][9] is None:
         lstOut[idx][9] = 0
 
   return lstOut
