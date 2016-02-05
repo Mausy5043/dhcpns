@@ -207,7 +207,7 @@ def ping(ip,cnt):
   # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
-def getKey(item):
+def getkey(item):
   return item[8]
 
 def red(text):
@@ -252,7 +252,7 @@ if __name__ == '__main__':
     lstOut =  getarp(lstOut) # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:print len(lstOut),"\n"
 
-    lstOut = sorted(lstOut, key=getKey) # sort the list by IP octet 4
+    lstOut = sorted(lstOut, key=getkey) # sort the list by IP octet 4
 
     lstOut = pingpong(lstOut) # search for signs of life
 
