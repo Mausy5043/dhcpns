@@ -146,8 +146,8 @@ def getarp(hostlist):
   entries = output.splitlines()
 
   # make a list of the IPs
-  colList = [ hostlist[i][0] for i in xrange(len(hostlist)) ]
-  if DEBUG:print "\t",colList
+  column0list = [ hostlist[i][0] for i in xrange(len(hostlist)) ]
+  if DEBUG:print "\t", column0list
 
   # Add `arp` data to the array
   for idx,line in enumerate(entries):
@@ -156,7 +156,7 @@ def getarp(hostlist):
     # IP according to arp
     ip=items[1][1:-1]
     try:
-      adx = colList.index(ip)
+      adx = column0list.index(ip)
       # arp hostname
       hostlist[adx][2] = items[0]
       hostlist[adx][8] = int(ip.split('.')[3])
@@ -169,7 +169,7 @@ def getarp(hostlist):
       hostlist[adx][3] = items[3]
       hostlist[adx][2] = items[0]
       hostlist[adx][9] = -1
-      colList.extend([ hostlist[i][0] ])
+      column0list.extend([ hostlist[i][0] ])
 
   return hostlist
 
