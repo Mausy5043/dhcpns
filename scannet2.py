@@ -34,8 +34,9 @@ def lstvssql(hostlist):
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl is None):
-          # MAC is not found in db
+          if DEBUG: print "MAC is not found in DB"
           if (line[5] != 0):
+            if DEBUG: print "... new host found"
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
                     '(mac, ipoctet4, lastseen, nodename) '
@@ -47,9 +48,9 @@ def lstvssql(hostlist):
             line[10] = lastseen
           #{endif}
         else:
-          # MAC is found in db
+          if DEBUG: print "MAC is present in DB"
           if (line[5] != 0):
-            # & host is pingable -> update data in DB
+            if DEBUG: print "... updating existing hostdata"
             cmd = ('UPDATE lantbl '
                     'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                     'WHERE mac = %s ')
@@ -179,13 +180,12 @@ def pingpong(hostlist):
     pong =  map(float,ping(ip,1))
     if pong[0] > 0:
       pong =  map(float,ping(ip,10))
-    hostlist[idx][4] = pong[0]
-    hostlist[idx][5] = pong[1]
-    hostlist[idx][6] = pong[2]
-    hostlist[idx][7] = pong[3]
-    if pong[0] == 0:
-      if hostlist[idx][9] is None:
-        hostlist[idx][9] = 0
+    lstOut[idx][4] = pong[0]
+    lstOut[idx][5] = pong[1]
+    lstOut[idx][6] = pong[2]
+    lstOut[idx][7] = pong[3]
+    if (pong[0] == 0) and (lstOut[idx][9] is None):
+        lstOut[idx][9] = 0
 
   return hostlist
 
