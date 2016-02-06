@@ -34,8 +34,9 @@ def lstvssql(lstOut):
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl is None):
-          # MAC is not found in db
+          if DEBUG: print "MAC is not found in DB"
           if (line[5] != 0):
+            if DEBUG: print "... new host found"
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
                     '(mac, ipoctet4, lastseen, nodename) '
@@ -47,9 +48,9 @@ def lstvssql(lstOut):
             line[10] = lastseen
           #{endif}
         else:
-          # MAC is found in db
+          if DEBUG: print "MAC is present in DB"
           if (line[5] != 0):
-            # & host is pingable -> update data in DB
+            if DEBUG: print "... updating existing hostdata"
             cmd = ('UPDATE lantbl '
                     'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                     'WHERE mac = %s ')
