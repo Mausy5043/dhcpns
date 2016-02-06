@@ -180,12 +180,12 @@ def pingpong(hostlist):
     pong =  map(float,ping(ip,1))
     if pong[0] > 0:
       pong =  map(float,ping(ip,10))
-    lstOut[idx][4] = pong[0]
-    lstOut[idx][5] = pong[1]
-    lstOut[idx][6] = pong[2]
-    lstOut[idx][7] = pong[3]
-    if (pong[0] == 0) and (lstOut[idx][9] is None):
-        lstOut[idx][9] = 0
+    hostlist[idx][4] = pong[0]
+    hostlist[idx][5] = pong[1]
+    hostlist[idx][6] = pong[2]
+    hostlist[idx][7] = pong[3]
+    if (pong[0] == 0) and (hostlist[idx][9] is None):
+        hostlist[idx][9] = 0
 
   return hostlist
 
