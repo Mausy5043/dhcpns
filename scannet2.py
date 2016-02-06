@@ -184,8 +184,7 @@ def pingpong(lstOut):
     lstOut[idx][5] = pong[1]
     lstOut[idx][6] = pong[2]
     lstOut[idx][7] = pong[3]
-    if pong[0] == 0:
-      if lstOut[idx][9] is None:
+    if (pong[0] == 0) and (lstOut[idx][9] is None):
         lstOut[idx][9] = 0
 
   return lstOut
