@@ -8,7 +8,7 @@ import time
 import MySQLdb as mdb
 
 # compare the gathered data to what is in the database
-def lstvssql(lstOut):
+def lstvssql(hostlist):
   try:
     #lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -21,7 +21,7 @@ def lstvssql(lstOut):
     ver = cur.fetchone()
     print "SQL database version: ", ver
     print "Scan performed on:    ", lastseen
-    for idx,line in enumerate(lstOut):
+    for idx,line in enumerate(hostlist):
       mac = line[3]
       ipoctet4 = str(line[8]).zfill(3)
       nodename = line[1]
@@ -96,7 +96,7 @@ def lstvssql(lstOut):
         cur.close()
         con.close()
   #{endtry}
-  return lstOut
+  return hostlist
 
 # read the system UN*X epoch
 def getuxtime():
@@ -108,7 +108,7 @@ def getuxtime():
 
 # read the contents /var/lib/misc/dnsmasq.leases
 def getleases(listsize):
-  lstOut = []
+  hostlist = []
   fi = "/var/lib/misc/dnsmasq.leases"
   f    = file(fi,'r')
   cat = f.read().strip('\n')
@@ -119,24 +119,24 @@ def getleases(listsize):
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
     if DEBUG:print idx,line
-    lstOut.extend([[None] * listsize])
+    hostlist.extend([[None] * listsize])
     items = line.split()
     # IP
     ip = items[2]
-    lstOut[idx][0] = ip
-    #lstOut[idx][8] = int(ip.split('.')[3])
+    hostlist[idx][0] = ip
+    #hostlist[idx][8] = int(ip.split('.')[3])
     # hostname
-    lstOut[idx][1] = items[3]
+    hostlist[idx][1] = items[3]
     # MAC
-    lstOut[idx][3] = items[1]
+    hostlist[idx][3] = items[1]
     # T2R
-    lstOut[idx][9] = (int(items[0]) - ux)/60
+    hostlist[idx][9] = (int(items[0]) - ux)/60
 
-  return lstOut
+  return hostlist
 
 # get the contents of the arp table (arp -a)
-def getarp(lstOut):
-  listsize = len(lstOut[0])
+def getarp(hostlist):
+  listsize = len(hostlist[0])
   cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
@@ -145,7 +145,7 @@ def getarp(lstOut):
   entries = output.splitlines()
 
   # make a list of the IPs
-  colList = [ lstOut[i][0] for i in xrange(len(lstOut)) ]
+  colList = [ hostlist[i][0] for i in xrange(len(hostlist)) ]
   if DEBUG:print "\t",colList
 
   # Add `arp` data to the array
@@ -157,37 +157,37 @@ def getarp(lstOut):
     try:
       adx = colList.index(ip)
       # arp hostname
-      lstOut[adx][2] = items[0]
-      lstOut[adx][8] = int(ip.split('.')[3])
+      hostlist[adx][2] = items[0]
+      hostlist[adx][8] = int(ip.split('.')[3])
     except ValueError:
-      lstOut.extend([[None] * listsize])
-      adx = len(lstOut)-1
-      lstOut[adx][0] = ip
-      lstOut[adx][8] = int(ip.split('.')[3])
-      lstOut[adx][1] = items[0]
-      lstOut[adx][3] = items[3]
-      lstOut[adx][2] = items[0]
-      lstOut[adx][9] = -1
-      colList.extend([ lstOut[i][0] ])
+      hostlist.extend([[None] * listsize])
+      adx = len(hostlist)-1
+      hostlist[adx][0] = ip
+      hostlist[adx][8] = int(ip.split('.')[3])
+      hostlist[adx][1] = items[0]
+      hostlist[adx][3] = items[3]
+      hostlist[adx][2] = items[0]
+      hostlist[adx][9] = -1
+      colList.extend([ hostlist[i][0] ])
 
-  return lstOut
+  return hostlist
 
 # ping each host in the list and store the timings
-def pingpong(lstOut):
-  for idx,line in enumerate(lstOut):
+def pingpong(hostlist):
+  for idx,line in enumerate(hostlist):
     ip = line[0]
     pong =  map(float,ping(ip,1))
     if pong[0] > 0:
       pong =  map(float,ping(ip,10))
-    lstOut[idx][4] = pong[0]
-    lstOut[idx][5] = pong[1]
-    lstOut[idx][6] = pong[2]
-    lstOut[idx][7] = pong[3]
+    hostlist[idx][4] = pong[0]
+    hostlist[idx][5] = pong[1]
+    hostlist[idx][6] = pong[2]
+    hostlist[idx][7] = pong[3]
     if pong[0] == 0:
-      if lstOut[idx][9] is None:
-        lstOut[idx][9] = 0
+      if hostlist[idx][9] is None:
+        hostlist[idx][9] = 0
 
-  return lstOut
+  return hostlist
 
 # ping the given `ip`  `cnt` times and return responsetimes
 def ping(ip,cnt):
@@ -250,26 +250,26 @@ if __name__ == '__main__':
     # 8 = IP(...4)
     # 9 = Time to release (minutes)
     #10 = lastseen
-    lstOut = getleases(11)  # parameter is size of the array
-    if DEBUG:print len(lstOut),"\n"
+    hostlist = getleases(11)  # parameter is size of the array
+    if DEBUG:print len(hostlist),"\n"
 
-    lstOut =  getarp(lstOut) # add the hosts that no longer have a lease but are still present in the arp cache
-    if DEBUG:print len(lstOut),"\n"
+    hostlist =  getarp(hostlist) # add the hosts that no longer have a lease but are still present in the arp cache
+    if DEBUG:print len(hostlist),"\n"
 
-    lstOut = sorted(lstOut, key=getkey) # sort the list by IP octet 4
+    hostlist = sorted(hostlist, key=getkey) # sort the list by IP octet 4
 
-    lstOut = pingpong(lstOut) # search for signs of life
+    hostlist = pingpong(hostlist) # search for signs of life
 
-    lstOut = lstvssql(lstOut) # compare the list with the database
+    hostlist = lstvssql(hostlist) # compare the list with the database
 
     # determine fieldlength of hostname for printing.
     lenhost=0
-    for idx,line in enumerate(lstOut):
-      if len(lstOut[idx][1]) > lenhost:
-        lenhost=len(lstOut[idx][1])
+    for idx,line in enumerate(hostlist):
+      if len(hostlist[idx][1]) > lenhost:
+        lenhost=len(hostlist[idx][1])
     #{endfor}
 
-    for idx,line in enumerate(lstOut):
+    for idx,line in enumerate(hostlist):
       spc0 = ' ' * ( 16 - len(line[0]) )
       spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
       spc2 = ' ' * ( 17 - len(line[3]) + 1 )
