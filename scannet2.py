@@ -21,7 +21,7 @@ def lstvssql(hostlist):
     ver = cur.fetchone()
     print "SQL database version: ", ver
     print "Scan performed on:    ", lastseen
-    for idx,line in enumerate(hostlist):
+    for idx, line in enumerate(hostlist):
       mac = line[3]
       ipoctet4 = str(line[8]).zfill(3)
       nodename = line[1]
@@ -29,8 +29,8 @@ def lstvssql(hostlist):
       if (len(mac) == 17):
         # MAC is valid: search for it in the DB
         cmd = ('SELECT * '
-                'FROM lantbl '
-                'WHERE mac="' + mac +'"' )
+               'FROM lantbl '
+               'WHERE mac="' + mac + '"')
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl is None):
@@ -39,8 +39,8 @@ def lstvssql(hostlist):
             if DEBUG: print "... new host found"
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
-                    '(mac, ipoctet4, lastseen, nodename) '
-                    'VALUES (%s, %s, %s, %s)')
+                   '(mac, ipoctet4, lastseen, nodename) '
+                   'VALUES (%s, %s, %s, %s)')
             dat = ( mac, ipoctet4, lastseen, nodename )
             syslog.syslog(syslog.LOG_NOTICE, "INSERTed " + mac + " @ " + nodename)
             cur.execute(cmd, dat)
