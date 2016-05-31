@@ -2,10 +2,12 @@
 
 # Scans the LAN for all hosts and reports some statistics about them
 
-import sys, syslog, traceback
-import subprocess as sp
-import time
 import MySQLdb as mdb
+import subprocess as sp
+import sys
+import syslog
+import time
+import traceback
 
 # compare the gathered data to what is in the database
 def lstvssql(hostlist):
