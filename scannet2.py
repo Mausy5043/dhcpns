@@ -35,9 +35,11 @@ def lstvssql(hostlist):
         cur.execute(cmd)
         rsl = cur.fetchone()
         if (rsl is None):
-          if DEBUG: print "MAC is not found in DB"
+          if DEBUG:
+            print "MAC is not found in DB"
           if (line[5] != 0):
-            if DEBUG: print "... new host found"
+            if DEBUG:
+              print "... new host found"
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
                    '(mac, ipoctet4, lastseen, nodename) '
@@ -49,9 +51,11 @@ def lstvssql(hostlist):
             line[10] = lastseen
           # {endif}
         else:
-          if DEBUG: print "MAC is present in DB"
+          if DEBUG:
+            print "MAC is present in DB"
           if (line[5] != 0):
-            if DEBUG: print "... updating existing hostdata"
+            if DEBUG:
+              print "... updating existing hostdata"
             cmd = ('UPDATE lantbl '
                     'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                     'WHERE mac = %s ')
@@ -116,11 +120,13 @@ def getleases(listsize):
   cat = f.read().strip('\n')
   f.close()
   entries = cat.splitlines()
-  if DEBUG:print entries
+  if DEBUG:
+    print entries
 
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
-    if DEBUG:print idx,line
+    if DEBUG:
+      print idx,line
     hostlist.extend([[None] * listsize])
     items = line.split()
     # IP
@@ -142,17 +148,21 @@ def getarp(hostlist):
   cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
-  if DEBUG:print err
-  if DEBUG:print output
+  if DEBUG:
+    print err
+  if DEBUG:
+    print output
   entries = output.splitlines()
 
   # make a list of the IPs
   column0list = [ hostlist[i][0] for i in xrange(len(hostlist)) ]
-  if DEBUG:print "\t", column0list
+  if DEBUG:
+    print "\t", column0list
 
   # Add `arp` data to the array
   for idx,line in enumerate(entries):
-    if DEBUG:print idx,line
+    if DEBUG:
+      print idx,line
     items = line.split()
     # IP according to arp
     ip=items[1][1:-1]
@@ -252,10 +262,12 @@ if __name__ == '__main__':
     #  9 = Time to release (minutes)
     # 10 = lastseen
     hostlist = getleases(11)  # parameter is size of the array
-    if DEBUG:print len(hostlist),"\n"
+    if DEBUG:
+      print len(hostlist),"\n"
 
     hostlist =  getarp(hostlist) # add the hosts that no longer have a lease but are still present in the arp cache
-    if DEBUG:print len(hostlist),"\n"
+    if DEBUG:
+      print len(hostlist),"\n"
 
     hostlist = sorted(hostlist, key=getkey) # sort the list by IP octet 4
 
