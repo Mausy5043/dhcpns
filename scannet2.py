@@ -44,7 +44,7 @@ def lstvssql(hostlist):
             cmd = ('INSERT INTO lantbl '
                    '(mac, ipoctet4, lastseen, nodename) '
                    'VALUES (%s, %s, %s, %s)')
-            dat = ( mac, ipoctet4, lastseen, nodename )
+            dat = (mac, ipoctet4, lastseen, nodename)
             syslog.syslog(syslog.LOG_NOTICE, "INSERTed " + mac + " @ " + nodename)
             cur.execute(cmd, dat)
             con.commit()
@@ -59,7 +59,7 @@ def lstvssql(hostlist):
             cmd = ('UPDATE lantbl '
                     'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                     'WHERE mac = %s ')
-            dat = ( lastseen, nodename, ipoctet4, mac )
+            dat = (lastseen, nodename, ipoctet4, mac)
             cur.execute(cmd, dat)
             con.commit()
             line[10] = lastseen
@@ -79,7 +79,7 @@ def lstvssql(hostlist):
           # then lookup the last user of the IP-address
           cmd = ('SELECT * '
                   'FROM lantbl '
-                  'WHERE ipoctet4="' + ipoctet4 +'"' )
+                  'WHERE ipoctet4="' + ipoctet4 +'"')
           cur.execute(cmd)
           rsl = cur.fetchone()
           # example output
@@ -155,7 +155,7 @@ def getarp(hostlist):
   entries = output.splitlines()
 
   # make a list of the IPs
-  column0list = [ hostlist[i][0] for i in xrange(len(hostlist)) ]
+  column0list = [hostlist[i][0] for i in xrange(len(hostlist))]
   if DEBUG:
     print "\t", column0list
 
@@ -180,7 +180,7 @@ def getarp(hostlist):
       hostlist[adx][3] = items[3]
       hostlist[adx][2] = items[0]
       hostlist[adx][9] = -1
-      column0list.extend([ hostlist[i][0] ])
+      column0list.extend([hostlist[i][0]])
 
   return hostlist
 
@@ -266,8 +266,7 @@ if __name__ == '__main__':
       print len(hostlist),"\n"
 
     hostlist =  getarp(hostlist) # add the hosts that no longer have a lease but are still present in the arp cache
-    if DEBUG:
-      print len(hostlist),"\n"
+    if DEBUG:      print len(hostlist),"\n"
 
     hostlist = sorted(hostlist, key=getkey) # sort the list by IP octet 4
 
@@ -283,9 +282,9 @@ if __name__ == '__main__':
     # {endfor}
 
     for idx,line in enumerate(hostlist):
-      spc0 = ' ' * ( 16 - len(line[0]) )
-      spc1 = ' ' * ( lenhost - len(line[1]) + 1 )
-      spc2 = ' ' * ( 17 - len(line[3]) + 1 )
+      spc0 = ' ' * (16 - len(line[0]))
+      spc1 = ' ' * (lenhost - len(line[1]) + 1)
+      spc2 = ' ' * (17 - len(line[3]) + 1)
       if (sw == 1):
         print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
       if (sw == 2):
