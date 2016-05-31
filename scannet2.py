@@ -12,7 +12,6 @@ import traceback
 # compare the gathered data to what is in the database
 def lstvssql(hostlist):
   try:
-    #lastseen = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
     con = mdb.connect(host='sql.lan', db='dhcpnsdb', read_default_file='~/.dns.cnf')
@@ -48,7 +47,7 @@ def lstvssql(hostlist):
             cur.execute(cmd, dat)
             con.commit()
             line[10] = lastseen
-          #{endif}
+          # {endif}
         else:
           if DEBUG: print "MAC is present in DB"
           if (line[5] != 0):
@@ -62,18 +61,18 @@ def lstvssql(hostlist):
             line[10] = lastseen
           else:
             # & host is not pingable -> update local data (arp-data may be stale)
-            #print "exists in DB; not pingable. Local data may not be up-to-date."
-            #print "update info ", mac, rsl
-            #print line[1],line[2]
+            # print "exists in DB; not pingable. Local data may not be up-to-date."
+            # print "update info ", mac, rsl
+            # print line[1],line[2]
             line[1] = "* " + rsl[3]
             line[2] = "* " + rsl[3]
             line[10] = rsl[2]
-          #{endif}
-        #{endif}
+          # {endif}
+        # {endif}
       else:
-        #sometimes nodename = "?" and mac = "<incomplete>"
+        # sometimes nodename = "?" and mac = "<incomplete>"
         if (nodename == "?"):
-          #then lookup the last user of the IP-address
+          # then lookup the last user of the IP-address
           cmd = ('SELECT * '
                   'FROM lantbl '
                   'WHERE ipoctet4="' + ipoctet4 +'"' )
@@ -88,8 +87,8 @@ def lstvssql(hostlist):
             line[10] = rsl[2]
         else:
           print nodename, mac, ipoctet4
-      #{endif}
-    #{endfor}
+      # {endif}
+    # {endfor}
   except mdb.Error, e:
     print e.__doc__
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
@@ -98,7 +97,7 @@ def lstvssql(hostlist):
     if con:
         cur.close()
         con.close()
-  #{endtry}
+  # {endtry}
   return hostlist
 
 # read the system UN*X epoch
@@ -127,7 +126,7 @@ def getleases(listsize):
     # IP
     ip = items[2]
     hostlist[idx][0] = ip
-    #hostlist[idx][8] = int(ip.split('.')[3])
+    # hostlist[idx][8] = int(ip.split('.')[3])
     # hostname
     hostlist[idx][1] = items[3]
     # MAC
@@ -235,23 +234,23 @@ if __name__ == '__main__':
     sw = 2
     if (sys.argv[1] == '-t'):
       sw = 1
-    #{endif}
-  #{endif}
+    # {endif}
+  # {endif}
   try:
     ux = getuxtime()
     ux = map(int,ux)[0]
 
-    # 0 = IP
-    # 1 = hostname (dhcp lease)
-    # 2 = hostname (arp)
-    # 3 = MAC
-    # 4 = ping min
-    # 5 = ping avg
-    # 6 = ping max
-    # 7 = ping stdev
-    # 8 = IP(...4)
-    # 9 = Time to release (minutes)
-    #10 = lastseen
+    #  0 = IP
+    #  1 = hostname (dhcp lease)
+    #  2 = hostname (arp)
+    #  3 = MAC
+    #  4 = ping min
+    #  5 = ping avg
+    #  6 = ping max
+    #  7 = ping stdev
+    #  8 = IP(...4)
+    #  9 = Time to release (minutes)
+    # 10 = lastseen
     hostlist = getleases(11)  # parameter is size of the array
     if DEBUG:print len(hostlist),"\n"
 
@@ -269,7 +268,7 @@ if __name__ == '__main__':
     for idx,line in enumerate(hostlist):
       if len(hostlist[idx][1]) > lenhost:
         lenhost=len(hostlist[idx][1])
-    #{endfor}
+    # {endfor}
 
     for idx,line in enumerate(hostlist):
       spc0 = ' ' * ( 16 - len(line[0]) )
@@ -279,7 +278,7 @@ if __name__ == '__main__':
         print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
       if (sw == 2):
         print line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10]
-    #{endfor}
+    # {endfor}
 
   except Exception as e:
     if DEBUG:
@@ -288,4 +287,4 @@ if __name__ == '__main__':
     syslog.syslog(syslog.LOG_ALERT,e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
-  #{endtry}
+  # {endtry}
