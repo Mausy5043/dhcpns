@@ -57,8 +57,8 @@ def lstvssql(hostlist):
             if DEBUG:
               print "... updating existing hostdata"
             cmd = ('UPDATE lantbl '
-                    'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
-                    'WHERE mac = %s ')
+                   'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
+                   'WHERE mac = %s ')
             dat = (lastseen, nodename, ipoctet4, mac)
             cur.execute(cmd, dat)
             con.commit()
@@ -78,8 +78,8 @@ def lstvssql(hostlist):
         if (nodename == "?"):
           # then lookup the last user of the IP-address
           cmd = ('SELECT * '
-                  'FROM lantbl '
-                  'WHERE ipoctet4="' + ipoctet4 +'"')
+                 'FROM lantbl '
+                 'WHERE ipoctet4="' + ipoctet4 + '"')
           cur.execute(cmd)
           rsl = cur.fetchone()
           # example output
@@ -116,7 +116,7 @@ def getuxtime():
 def getleases(listsize):
   hostlist = []
   fi = "/var/lib/misc/dnsmasq.leases"
-  f    = file(fi,'r')
+  f    = file(fi, 'r')
   cat = f.read().strip('\n')
   f.close()
   entries = cat.splitlines()
@@ -126,7 +126,7 @@ def getleases(listsize):
   # fill the array with datafrom the leases
   for idx, line in enumerate(entries):
     if DEBUG:
-      print idx,line
+      print idx, line
     hostlist.extend([[None] * listsize])
     items = line.split()
     # IP
@@ -160,12 +160,12 @@ def getarp(hostlist):
     print "\t", column0list
 
   # Add `arp` data to the array
-  for idx,line in enumerate(entries):
+  for idx, line in enumerate(entries):
     if DEBUG:
-      print idx,line
+      print idx, line
     items = line.split()
     # IP according to arp
-    ip=items[1][1:-1]
+    ip = items[1][1:-1]
     try:
       adx = column0list.index(ip)
       # arp hostname
@@ -186,11 +186,11 @@ def getarp(hostlist):
 
 # ping each host in the list and store the timings
 def pingpong(hostlist):
-  for idx,line in enumerate(hostlist):
+  for idx, line in enumerate(hostlist):
     ip = line[0]
-    pong =  map(float,ping(ip,1))
+    pong = map(float, ping(ip, 1))
     if pong[0] > 0:
-      pong =  map(float,ping(ip,10))
+      pong = map(float, ping(ip, 10))
     hostlist[idx][4] = pong[0]
     hostlist[idx][5] = pong[1]
     hostlist[idx][6] = pong[2]
@@ -201,7 +201,7 @@ def pingpong(hostlist):
   return hostlist
 
 # ping the given `ip`  `cnt` times and return responsetimes
-def ping(ip,cnt):
+def ping(ip, cnt):
   cmd = ["ping", "-w", "1", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
@@ -209,7 +209,7 @@ def ping(ip,cnt):
   # get last line of output
   line = output.splitlines()[-1]
   # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
-  if (len(line) < 12) :
+  if (len(line) < 12):
     line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
 
   # get third field
@@ -233,7 +233,7 @@ def syslog_trace(trace):
   log_lines = trace.split('\n')
   for line in log_lines:
     if line:
-      syslog.syslog(syslog.LOG_ALERT,line)
+      syslog.syslog(syslog.LOG_ALERT, line)
 
 if __name__ == '__main__':
   DEBUG = False
@@ -248,7 +248,7 @@ if __name__ == '__main__':
   # {endif}
   try:
     ux = getuxtime()
-    ux = map(int,ux)[0]
+    ux = map(int, ux)[0]
 
     #  0 = IP
     #  1 = hostname (dhcp lease)
@@ -263,25 +263,26 @@ if __name__ == '__main__':
     # 10 = lastseen
     hostlist = getleases(11)  # parameter is size of the array
     if DEBUG:
-      print len(hostlist),"\n"
+      print len(hostlist), "\n"
 
-    hostlist =  getarp(hostlist) # add the hosts that no longer have a lease but are still present in the arp cache
-    if DEBUG:      print len(hostlist),"\n"
+    hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
+    if DEBUG:
+      print len(hostlist), "\n"
 
-    hostlist = sorted(hostlist, key=getkey) # sort the list by IP octet 4
+    hostlist = sorted(hostlist, key=getkey)  # sort the list by IP octet 4
 
-    hostlist = pingpong(hostlist) # search for signs of life
+    hostlist = pingpong(hostlist)  # search for signs of life
 
-    hostlist = lstvssql(hostlist) # compare the list with the database
+    hostlist = lstvssql(hostlist)  # compare the list with the database
 
     # determine fieldlength of hostname for printing.
-    lenhost=0
-    for idx,line in enumerate(hostlist):
+    lenhost = 0
+    for idx, line in enumerate(hostlist):
       if len(hostlist[idx][1]) > lenhost:
-        lenhost=len(hostlist[idx][1])
+        lenhost = len(hostlist[idx][1])
     # {endfor}
 
-    for idx,line in enumerate(hostlist):
+    for idx, line in enumerate(hostlist):
       spc0 = ' ' * (16 - len(line[0]))
       spc1 = ' ' * (lenhost - len(line[1]) + 1)
       spc2 = ' ' * (17 - len(line[3]) + 1)
@@ -295,7 +296,7 @@ if __name__ == '__main__':
     if DEBUG:
       print("Unexpected error:")
       red(e.message)
-    syslog.syslog(syslog.LOG_ALERT,e.__doc__)
+    syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
   # {endtry}
