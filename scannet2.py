@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# Scans the LAN for all hosts and reports some statistics about them
+"""Scans the LAN for all hosts and reports some statistics about them"""
 
 import MySQLdb as mdb
 import subprocess as sp
@@ -9,8 +9,8 @@ import syslog
 import time
 import traceback
 
-# compare the gathered data to what is in the database
 def lstvssql(hostlist):
+  """Compare the gathered data to what is in the database."""
   try:
     lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
@@ -104,16 +104,16 @@ def lstvssql(hostlist):
   # {endtry}
   return hostlist
 
-# read the system UN*X epoch
 def getuxtime():
+  """Read the system UN*X epoch"""
   cmd = ["date", "+'%s'"]
   dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = dt.communicate()
   entries = output.replace("'", "").splitlines()
   return entries
 
-# read the contents /var/lib/misc/dnsmasq.leases
 def getleases(listsize):
+  """Read the contents /var/lib/misc/dnsmasq.leases"""
   hostlist = []
   fi = "/var/lib/misc/dnsmasq.leases"
   f    = file(fi, 'r')
@@ -142,8 +142,8 @@ def getleases(listsize):
 
   return hostlist
 
-# get the contents of the arp table (arp -a)
 def getarp(hostlist):
+  """Get the contents of the arp table (arp -a)"""
   listsize = len(hostlist[0])
   cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -184,8 +184,8 @@ def getarp(hostlist):
 
   return hostlist
 
-# ping each host in the list and store the timings
 def pingpong(hostlist):
+  """Ping each host in the list and store the timings."""
   for idx, line in enumerate(hostlist):
     ip = line[0]
     pong = map(float, ping(ip, 1))
@@ -200,8 +200,8 @@ def pingpong(hostlist):
 
   return hostlist
 
-# ping the given `ip`  `cnt` times and return responsetimes
 def ping(ip, cnt):
+  """Ping the given `ip`  `cnt` times and return responsetimes"""
   cmd = ["ping", "-w", "1", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
@@ -220,16 +220,16 @@ def ping(ip, cnt):
   # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
-# 'row' in list to sort by
 def getkey(item):
+  """'row' in list to sort by"""
   return item[8]
 
-# format a string to make it show red on an ANSI terminal
 def red(text):
+  """Format a string to make it show red on an ANSI terminal"""
   print ("\033[91m {}\033[00m" .format(text))
 
-# Log a python stack trace to syslog
 def syslog_trace(trace):
+  """Log a python stack trace to syslog"""
   log_lines = trace.split('\n')
   for line in log_lines:
     if line:
