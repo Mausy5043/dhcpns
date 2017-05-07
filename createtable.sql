@@ -8,4 +8,7 @@ CREATE TABLE `lantbl` (
   `lastseen` datetime DEFAULT NULL,
   `nodename` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`mac`)
+  INDEX (`ipoctet4`),
+  INDEX (`lastseen`),
+  INDEX (`nodename`),
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;

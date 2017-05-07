@@ -3,7 +3,7 @@
 fversion="$HOME/.dhcpns.version"
 fbranch="$HOME/.dhcpns.branch"
 
-VERSION="1.1"
+VERSION="1.2"
 BRANCH="master"
 
 if [ ! -e "$fversion" ]; then
