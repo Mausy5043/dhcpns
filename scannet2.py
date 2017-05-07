@@ -104,15 +104,7 @@ def lstvssql(hostlist):
   # {endtry}
   return hostlist
 
-def getuxtime():
-  """Read the system UN*X epoch"""
-  cmd = ["date", "+'%s'"]
-  dt = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-  output, err = dt.communicate()
-  entries = output.replace("'", "").splitlines()
-  return entries
-
-def getleases(listsize):
+def getleases(listsize, ux):
   """Read the contents /var/lib/misc/dnsmasq.leases"""
   hostlist = []
   fi = "/var/lib/misc/dnsmasq.leases"
@@ -123,7 +115,7 @@ def getleases(listsize):
   if DEBUG:
     print entries
 
-  # fill the array with datafrom the leases
+  # fill the array with data from the leases
   for idx, line in enumerate(entries):
     if DEBUG:
       print idx, line
@@ -235,6 +227,7 @@ def syslog_trace(trace):
     if line:
       syslog.syslog(syslog.LOG_ALERT, line)
 
+
 if __name__ == '__main__':
   DEBUG = False
   lsa = len(sys.argv)
@@ -245,11 +238,14 @@ if __name__ == '__main__':
     if (sys.argv[1] == '-t'):
       sw = 1
     # {endif}
+    if (sys.argv[1] == '-d'):
+      DEBUG = True
   # {endif}
   try:
-    ux = getuxtime()
-    ux = map(int, ux)[0]
+    ux = time.time()
 
+    # We are keeping an array <hostlist> that holds these fields
+    # for each host on the network:
     #  0 = IP
     #  1 = hostname (dhcp lease)
     #  2 = hostname (arp)
@@ -261,7 +257,8 @@ if __name__ == '__main__':
     #  8 = IP(...4)
     #  9 = Time to release (minutes)
     # 10 = lastseen
-    hostlist = getleases(11)  # parameter is size of the array
+
+    hostlist = getleases(11, ux)  # parameter is size of the array
     if DEBUG:
       print len(hostlist), "\n"
 
