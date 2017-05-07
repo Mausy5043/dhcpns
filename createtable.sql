@@ -10,5 +10,5 @@ CREATE TABLE `lantbl` (
   PRIMARY KEY (`mac`)
   INDEX (`ipoctet4`),
   INDEX (`lastseen`),
-  INDEX (`nodename`),
+  INDEX (`nodename`)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
