@@ -56,10 +56,16 @@ def lstvssql(hostlist):
           if (line[5] != 0):
             if DEBUG:
               print "... updating existing hostdata"
-            cmd = ('UPDATE lantbl '
+            if nodename != "*":
+              cmd = ('UPDATE lantbl '
                    'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                    'WHERE mac = %s ')
-            dat = (lastseen, nodename, ipoctet4, mac)
+              dat = (lastseen, nodename, ipoctet4, mac)
+            else:
+              cmd = ('UPDATE lantbl '
+                     'SET lastseen = %s, ipoctet4 = %s '
+                     'WHERE mac = %s ')
+              dat = (lastseen, ipoctet4, mac)
             cur.execute(cmd, dat)
             con.commit()
             line[10] = lastseen
