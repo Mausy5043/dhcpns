@@ -14,7 +14,7 @@ def lstvssql(hostlist):
   try:
     lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
-    con = mdb.connect(host='sql.lan', db='dhcpnsdb', read_default_file='~/.dns.cnf')
+    con = mdb.connect(host='sql', db='dhcpnsdb', read_default_file='~/.dns.cnf')
     # activate a cursor
     cur = con.cursor()
     # test the connection
