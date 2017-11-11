@@ -152,7 +152,7 @@ def getarp(hostlist):
   entries = output.splitlines()
 
   # make a list of the IPs
-  column0list = [hostlist[i][0] for i in xrange(len(hostlist))]
+  column0list = [hostlist[i][0] for i in range(len(hostlist))]
   if DEBUG:
     print("\t%s" % column0list)
 
@@ -185,9 +185,9 @@ def pingpong(hostlist):
   """Ping each host in the list and store the timings."""
   for idx, line in enumerate(hostlist):
     ip = line[0]
-    pong = map(float, ping(ip, 1))
+    pong = list(map(float, ping(ip, 1)))
     if pong[0] > 0:
-      pong = map(float, ping(ip, 10))
+      pong = list(map(float, ping(ip, 10)))
     hostlist[idx][4] = pong[0]
     hostlist[idx][5] = pong[1]
     hostlist[idx][6] = pong[2]
