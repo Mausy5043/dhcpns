@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 """Scans the LAN for all hosts and reports some statistics about them"""
 
@@ -58,8 +58,8 @@ def lstvssql(hostlist):
               print "... updating existing hostdata"
             if nodename != "*":
               cmd = ('UPDATE lantbl '
-                   'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
-                   'WHERE mac = %s ')
+                     'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
+                     'WHERE mac = %s ')
               dat = (lastseen, nodename, ipoctet4, mac)
             else:
               cmd = ('UPDATE lantbl '
