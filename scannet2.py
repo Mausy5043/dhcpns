@@ -99,7 +99,7 @@ def lstvssql(hostlist):
           print(nodename, mac, ipoctet4)
       # {endif}
     # {endfor}
-  except mdb.Error, e:
+  except mdb.Error as e:
     print(e.__doc__)
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
