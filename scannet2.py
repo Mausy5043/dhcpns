@@ -20,8 +20,8 @@ def lstvssql(hostlist):
     # test the connection
     cur.execute("SELECT VERSION()")
     ver = cur.fetchone()
-    print "SQL database version: ", ver
-    print "Scan performed on:    ", lastseen
+    print("SQL database version: %s" % ver)
+    print("Scan performed on:    %s" % lastseen)
     for idx, line in enumerate(hostlist):
       mac = line[3]
       ipoctet4 = str(line[8]).zfill(3)
@@ -36,10 +36,10 @@ def lstvssql(hostlist):
         rsl = cur.fetchone()
         if (rsl is None):
           if DEBUG:
-            print "MAC is not found in DB"
+            print("MAC is not found in DB")
           if (line[5] != 0):
             if DEBUG:
-              print "... new host found"
+              print("... new host found")
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
                    '(mac, ipoctet4, lastseen, nodename) '
@@ -52,10 +52,10 @@ def lstvssql(hostlist):
           # {endif}
         else:
           if DEBUG:
-            print "MAC is present in DB"
+            print("MAC is present in DB")
           if (line[5] != 0):
             if DEBUG:
-              print "... updating existing hostdata"
+              print("... updating existing hostdata")
             if nodename != "*":
               cmd = ('UPDATE lantbl '
                      'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
@@ -96,11 +96,11 @@ def lstvssql(hostlist):
             line[3] = "-" + rsl[0]
             line[10] = rsl[2]
         else:
-          print nodename, mac, ipoctet4
+          print(nodename, mac, ipoctet4)
       # {endif}
     # {endfor}
   except mdb.Error, e:
-    print e.__doc__
+    print(e.__doc__)
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
   finally:
@@ -119,12 +119,12 @@ def getleases(listsize, ux):
   f.close()
   entries = cat.splitlines()
   if DEBUG:
-    print entries
+    print(entries)
 
   # fill the array with data from the leases
   for idx, line in enumerate(entries):
     if DEBUG:
-      print idx, line
+      print(idx, line)
     hostlist.extend([[None] * listsize])
     items = line.split()
     # IP
@@ -147,20 +147,19 @@ def getarp(hostlist):
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
   if DEBUG:
-    print err
-  if DEBUG:
-    print output
+    print(err)
+    print(output)
   entries = output.splitlines()
 
   # make a list of the IPs
   column0list = [hostlist[i][0] for i in xrange(len(hostlist))]
   if DEBUG:
-    print "\t", column0list
+    print("\t%s" % column0list)
 
   # Add `arp` data to the array
   for idx, line in enumerate(entries):
     if DEBUG:
-      print idx, line
+      print(idx, line)
     items = line.split()
     # IP according to arp
     ip = items[1][1:-1]
@@ -224,7 +223,7 @@ def getkey(item):
 
 def red(text):
   """Format a string to make it show red on an ANSI terminal"""
-  print ("\033[91m {}\033[00m" .format(text))
+  print("\033[91m {}\033[00m" .format(text))
 
 def syslog_trace(trace):
   """Log a python stack trace to syslog"""
@@ -266,11 +265,11 @@ if __name__ == '__main__':
 
     hostlist = getleases(11, ux)  # parameter is size of the array
     if DEBUG:
-      print len(hostlist), "\n"
+      print(len(hostlist), "\n")
 
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
-      print len(hostlist), "\n"
+      print(len(hostlist), "\n")
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by IP octet 4
 
@@ -290,9 +289,9 @@ if __name__ == '__main__':
       spc1 = ' ' * (lenhost - len(line[1]) + 1)
       spc2 = ' ' * (17 - len(line[3]) + 1)
       if (sw == 1):
-        print line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9]
+        print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9])
       if (sw == 2):
-        print line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10]
+        print(line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10])
     # {endfor}
 
   except Exception as e:
