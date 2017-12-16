@@ -113,7 +113,8 @@ def lstvssql(hostlist):
 def getleases(listsize, ux):
   """Read the contents /var/lib/misc/dnsmasq.leases"""
   hostlist = []
-  fi = "/var/lib/misc/dnsmasq.leases"
+  # fi = "/var/lib/misc/dnsmasq.leases"
+  fi = "/etc/pihole/dhcp.leases"
   f    = file(fi, 'r')
   cat = f.read().strip('\n')
   f.close()
