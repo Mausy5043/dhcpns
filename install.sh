@@ -3,8 +3,8 @@
 fversion="$HOME/.dhcpns.version"
 fbranch="$HOME/.dhcpns.branch"
 
-VERSION="1.3"
-BRANCH="master"
+VERSION="2.1"
+BRANCH="py3"
 
 install_package()
 {
@@ -31,7 +31,7 @@ if [ ! -e "$fbranch" ]; then
   echo $BRANCH > "$fbranch"
 fi
 
-sudo apt-get update
 # MySQL support (python3)
 install_package "mysql-client"
-install_package "python-mysqldb"
+install_package "libmariadbclient-dev"
+sudo pip3 install mysqlclient
