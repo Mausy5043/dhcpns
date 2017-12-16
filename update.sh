@@ -1,8 +1,12 @@
 #! /bin/bash
 
-branch=$(cat "$HOME/.dhcpns.branch")
+BRANCH=$(cat "$HOME/.dhcpns.branch")
 pushd "$HOME/dhcpns"
+  git fetch origin
+  # Check which files have changed
+  DIFFLIST=$(git --no-pager diff --name-only "$BRANCH..origin/$BRANCH")
   git pull
   git fetch origin
-  git checkout "$branch" && git reset --hard "origin/$branch" && git clean -f -d
+  git checkout "$BRANCH"
+  git reset --hard "origin/$BRANCH" && git clean -f -d
 popd
