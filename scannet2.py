@@ -10,6 +10,8 @@ import syslog
 import time
 import traceback
 
+MYDIR = os.path.dirname(os.path.realpath(__file__))
+
 def lstvssql(hostlist):
   """
   Compare the gathered data to what is in the database.
@@ -117,7 +119,8 @@ def findleasesfile(filename):
   """
   Find the path to the leases file of dnsmasq
   """
-  cmd = ["./getleasesfile.sh"]
+  glf = MYDIR + "/getleasesfile.sh"
+  cmd = [glf]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
   output = output.decode("utf-8").strip('\n')
