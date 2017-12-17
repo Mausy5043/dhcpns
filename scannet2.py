@@ -1,16 +1,19 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 
 """Scans the LAN for all hosts and reports some statistics about them"""
 
 import MySQLdb as mdb
 import subprocess as sp
+import os
 import sys
 import syslog
 import time
 import traceback
 
 def lstvssql(hostlist):
-  """Compare the gathered data to what is in the database."""
+  """
+  Compare the gathered data to what is in the database.
+  """
   try:
     lastseen = time.strftime('%Y-%m-%d %H:%M:%S')
     # connect to the database
@@ -110,35 +113,51 @@ def lstvssql(hostlist):
   # {endtry}
   return hostlist
 
+def findleasesfile(filename):
+  """
+  Find the path to the leases file of dnsmasq
+  """
+  cmd = ["./getleasesfile.sh"]
+  ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
+  filename, err = ping.communicate()
+  if DEBUG:
+    print(filename)
+  if not os.path.isfile(filename):
+    raise OSError("File not found")
+  return filename
+
 def getleases(listsize, ux):
-  """Read the contents /var/lib/misc/dnsmasq.leases"""
+  """
+  Read the contents of the dnsmasq leases file
+  Normally: /var/lib/misc/dnsmasq.leases
+  """
+  leasesfile = findleasesfile("/var/lib/misc/dnsmasq.leases")
   hostlist = []
-  # fi = "/var/lib/misc/dnsmasq.leases"
-  fi = "/etc/pihole/dhcp.leases"
-  f    = file(fi, 'r')
-  cat = f.read().strip('\n')
-  f.close()
+
+  with open(leasesfile, 'r') as f:
+    cat = f.read().strip('\n')
+  # {endwith}
   entries = cat.splitlines()
   if DEBUG:
     print(entries)
+  # {endif}
 
   # fill the array with data from the leases
   for idx, line in enumerate(entries):
     if DEBUG:
       print(idx, line)
+    # {endif}
     hostlist.extend([[None] * listsize])
     items = line.split()
-    # IP
-    ip = items[2]
-    hostlist[idx][0] = ip
-    # hostlist[idx][8] = int(ip.split('.')[3])
-    # hostname
-    hostlist[idx][1] = items[3]
+    # T2R (expiry time)
+    hostlist[idx][9] = (int(items[0]) - ux)/60
     # MAC
     hostlist[idx][3] = items[1]
-    # T2R
-    hostlist[idx][9] = (int(items[0]) - ux)/60
-
+    # IP
+    hostlist[idx][0] = items[2]
+    # hostname
+    hostlist[idx][1] = items[3]
+  # {endfor}
   return hostlist
 
 def getarp(hostlist):
@@ -235,18 +254,20 @@ def syslog_trace(trace):
 
 
 if __name__ == '__main__':
+  # preset vars
   DEBUG = False
-  lsa = len(sys.argv)
-  if (lsa == 1):
-    sw = 2
-  else:
-    sw = 2
-    if (sys.argv[1] == '-t'):
-      sw = 1
-    # {endif}
-    if (sys.argv[1] == '-d'):
+  PRINTPATTERN = 2
+  # check for commandline parameters and take action
+  for parm in sys.argv:
+    if (parm == '-t'):
+      PRINTPATTERN = 1
+      print("show timings")
+    elif (parm == '-d'):
       DEBUG = True
-  # {endif}
+      print("debugging on")
+    # {endif}
+  # {endfor}
+
   try:
     ux = time.time()
 
@@ -272,7 +293,7 @@ if __name__ == '__main__':
     if DEBUG:
       print(len(hostlist), "\n")
 
-    hostlist = sorted(hostlist, key=getkey)  # sort the list by IP octet 4
+    hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
 
     hostlist = pingpong(hostlist)  # search for signs of life
 
@@ -289,17 +310,26 @@ if __name__ == '__main__':
       spc0 = ' ' * (16 - len(line[0]))
       spc1 = ' ' * (lenhost - len(line[1]) + 1)
       spc2 = ' ' * (17 - len(line[3]) + 1)
-      if (sw == 1):
+      if (PRINTPATTERN == 1):
         print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9])
-      if (sw == 2):
+      if (PRINTPATTERN == 2):
         print(line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10])
     # {endfor}
 
   except Exception as e:
     if DEBUG:
       print("Unexpected error:")
-      red(e.message)
+    # red(e.message)
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
   # {endtry}
+
+"""
+1. Get list of current leases
+2. Get contents of arp cache
+3. Check against DB entries
+4. Ping all hosts in the list
+5. Update DB with (1) new hosts and (2) last seen times
+#
+"""
