@@ -177,15 +177,15 @@ def getarp(hostlist):
   if DEBUG:
     print("Cached by arp:")
   if DEBUG:
-    print(err)
+    print(err.decode("utf-8").strip('\n'))
     print(output)
   # {endif}
   entries = output.splitlines()
 
-  # make a list of the IPs
+  # make a list of the leased IPs
   column0list = [hostlist[i][0] for i in range(len(hostlist))]
   if DEBUG:
-    print("List of IPs according to arp:")
+    print("List of leased IPs")
     print("\t%s" % column0list)
   # {endif}
 
@@ -195,6 +195,7 @@ def getarp(hostlist):
       print(idx, line)
     # {endif}
     items = line.split()
+
     # IP according to arp
     ip = items[1][1:-1]
     try:
