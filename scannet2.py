@@ -227,7 +227,9 @@ def getarp(hostlist):
   return hostlist
 
 def pingpong(hostlist):
-  """Ping each host in the list and store the timings."""
+  """
+  Ping each host in the list and store the timings.
+  """
   for idx, line in enumerate(hostlist):
     ip = line[0]
     pong = list(map(float, ping(ip, 1)))
@@ -243,13 +245,18 @@ def pingpong(hostlist):
   return hostlist
 
 def ping(ip, cnt):
-  """Ping the given `ip`  `cnt` times and return responsetimes"""
+  """
+  Ping the given `ip`  `cnt` times and return responsetimes
+  """
   cmd = ["ping", "-w", "1", "-q", "-i", "0.5", "-c", str(cnt), ip]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = ping.communicate()
 
   # get last line of output
-  line = output.splitlines()[-1]
+  line = output.decode("utf-8").splitlines()[-1]
+  if DEBUG:
+    print(line)
+  # {endif}
   # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
   if (len(line) < 12):
     line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
@@ -307,7 +314,7 @@ if __name__ == '__main__':
     #  6 = ping max
     #  7 = ping stdev
     #  8 = IP(...4)
-    #  9 = Time to release (minutes)
+    #  9 = Time to release (minutes); -1 for expired
     # 10 = lastseen
 
     hostlist = getleases(11, ux)  # parameter is size of the array
