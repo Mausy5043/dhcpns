@@ -336,12 +336,12 @@ if __name__ == '__main__':
     if DEBUG:
       print("List length (ARP)   : ", len(hostlist), "\n")
       print("----------HOSTLIST----------")
-      print(hostlist)
+      print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
     if DEBUG:
       print("----------HOSTLIST----------")
-      print(hostlist)
+      print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
 
     hostlist = pingpong(hostlist)  # search for signs of life
 
