@@ -199,20 +199,29 @@ def getarp(hostlist):
     # IP according to arp
     ip = items[1][1:-1]
     try:
+      # first we check if the IP is already being leased
+      # if not this will create an exception.
+      # we use the exception to add the IP and relevant data from the arp cache
+      # into the hostlist
       adx = column0list.index(ip)
+      # add additional data to the existing entry
       # arp hostname
       hostlist[adx][2] = items[0]
+      # ipoctet4
       hostlist[adx][8] = int(ip.split('.')[3])
     except ValueError:
+      # add a new entry...
       hostlist.extend([[None] * listsize])
+      # ...and point there
       adx = len(hostlist)-1
+      # add the relevant data from the arp cache into the hostlist
       hostlist[adx][0] = ip
       hostlist[adx][8] = int(ip.split('.')[3])
       hostlist[adx][1] = items[0]
       hostlist[adx][3] = items[3]
       hostlist[adx][2] = items[0]
       hostlist[adx][9] = -1
-      column0list.extend([hostlist[i][0]])
+      # column0list.extend([hostlist[adx][0]])
       pass
     # {endtry}
 
