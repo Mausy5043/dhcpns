@@ -166,12 +166,16 @@ def getleases(listsize, ux):
   return hostlist
 
 def getarp(hostlist):
-  """Get the contents of the arp table (arp -a)"""
+  """
+  Get the contents of the arp table (arp -a)
+  """
   listsize = len(hostlist[0])
   cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
   output = output.decode("utf-8").strip('\n')
+  if DEBUG:
+    print("Cached by arp:")
   if DEBUG:
     print(err)
     print(output)
@@ -181,6 +185,7 @@ def getarp(hostlist):
   # make a list of the IPs
   column0list = [hostlist[i][0] for i in range(len(hostlist))]
   if DEBUG:
+    print("List of IPs according to arp:")
     print("\t%s" % column0list)
   # {endif}
 
@@ -207,6 +212,7 @@ def getarp(hostlist):
       hostlist[adx][2] = items[0]
       hostlist[adx][9] = -1
       column0list.extend([hostlist[i][0]])
+      pass
     # {endtry}
 
   return hostlist
@@ -297,11 +303,11 @@ if __name__ == '__main__':
 
     hostlist = getleases(11, ux)  # parameter is size of the array
     if DEBUG:
-      print("List length: ", len(hostlist), "\n")
+      print("List length (LEASES): ", len(hostlist), "\n")
 
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
-      print("List length: ", len(hostlist), "\n")
+      print("List length (ARP)   : ", len(hostlist), "\n")
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
 
