@@ -320,6 +320,9 @@ if __name__ == '__main__':
       print("List length (ARP)   : ", len(hostlist), "\n")
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
+    if DEBUG:
+      print("----------HOSTLIST----------")
+      print(hostlist)
 
     hostlist = pingpong(hostlist)  # search for signs of life
 
