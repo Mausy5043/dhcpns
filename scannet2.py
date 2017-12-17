@@ -221,7 +221,6 @@ def getarp(hostlist):
       hostlist[adx][2] = items[0].split('.')[0]
       hostlist[adx][3] = items[3]
       hostlist[adx][9] = -1
-      # column0list.extend([hostlist[adx][0]])
       pass
     # {endtry}
 
