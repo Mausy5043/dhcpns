@@ -119,9 +119,12 @@ def findleasesfile(filename):
   """
   cmd = ["./getleasesfile.sh"]
   ping = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-  filename, err = ping.communicate()
+  output, err = ping.communicate()
+  output = output.decode("utf-8").strip('\n')
+  if output:
+    filename = output
   if DEBUG:
-    print(filename)
+    print("Leases file: {0}".format(filename))
   if not os.path.isfile(filename):
     raise OSError("File not found")
   return filename
@@ -166,6 +169,7 @@ def getarp(hostlist):
   cmd = ["/usr/sbin/arp", "-a"]
   arp = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
   output, err = arp.communicate()
+  output = output.decode("utf-8").strip('\n')
   if DEBUG:
     print(err)
     print(output)
