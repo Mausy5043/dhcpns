@@ -43,7 +43,7 @@ def lstvssql(hostlist):
           if DEBUG:
             print("MAC is not found in DB")
           # {endif}
-          if (line[5] != 0):
+          if (line[5] != 0):  # valid ping
             if DEBUG:
               print("... new host found")
             # {endif}
@@ -61,7 +61,7 @@ def lstvssql(hostlist):
           if DEBUG:
             print("MAC is present in DB")
           # {endif}
-          if (line[5] != 0):
+          if (line[5] != 0):  # valid ping
             if DEBUG:
               print("... updating existing hostdata")
             # {endif}
