@@ -186,7 +186,7 @@ def getarp(hostlist):
   column0list = [hostlist[i][0] for i in range(len(hostlist))]
   if DEBUG:
     print("List of leased IPs")
-    print("\t%s" % column0list)
+    print('\n'.join('{}: {}'.format(*k) for k in enumerate(column0list)))
   # {endif}
 
   # Add `arp` data to the array
