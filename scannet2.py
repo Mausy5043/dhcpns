@@ -149,21 +149,19 @@ def getleases(listsize, ux):
   if DEBUG:
     print("Existing leases:")
   for idx, line in enumerate(entries):
-    if line:
-      if DEBUG:
-        print(idx, len(line), line)
-      # {endif}
-      hostlist.extend([[None] * listsize])
-      items = line.split()
-      # T2R (expiry time)
-      hostlist[idx][9] = (int(items[0]) - ux)/60
-      # MAC
-      hostlist[idx][3] = items[1]
-      # IP
-      hostlist[idx][0] = items[2]
-      # hostname
-      hostlist[idx][1] = items[3]
+    if DEBUG:
+      print(idx, len(line), line)
     # {endif}
+    hostlist.extend([[None] * listsize])
+    items = line.split()
+    # T2R (expiry time)
+    hostlist[idx][9] = (int(items[0]) - ux)/60
+    # MAC
+    hostlist[idx][3] = items[1]
+    # IP
+    hostlist[idx][0] = items[2]
+    # hostname
+    hostlist[idx][1] = items[3]
   # {endfor}
   return hostlist
 
@@ -299,11 +297,11 @@ if __name__ == '__main__':
 
     hostlist = getleases(11, ux)  # parameter is size of the array
     if DEBUG:
-      print(len(hostlist), "\n")
+      print("List length: ", len(hostlist), "\n")
 
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
-      print(len(hostlist), "\n")
+      print("List length: ", len(hostlist), "\n")
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
 
