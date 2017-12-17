@@ -1,15 +1,24 @@
 # dhcpns
-executables for DHCP/DNS servers
+Executables for DHCP/DNS servers running `dnsmasq`
 
-[![Code Issues](https://www.quantifiedcode.com/api/v1/project/7d9e6338e59c432585910444e686eb24/badge.svg)](https://www.quantifiedcode.com/app/project/7d9e6338e59c432585910444e686eb24)
+Keeps track of network clients
+* node or computer name
+* IP-address assigned
+* machine specific MAC-address 
+* date/time last seen
+* optional: ping min/avg/max and time until IP needs to be renewed
 
-Assumptions:
-* using `dnsmasq`
-* installed packages:
-  * `traceroute`
-  * `inetutils`
-  * `mysql-client`
+Requires `dnsmasq`.
 
-Requires:
-* `arp`
-* MySQL server locally or remote.
+This also assumes you have a MySQL server on the local network.
+Make sure you create a database called `dhcpnsdb`.
+
+Create a file (`~/.dns.cnf`) containing
+```
+[client]
+user=dhcpns
+password="MySqlDbPassword"
+```
+(pick a safe password)
+
+On the MySQL server create a user `dhcpns` with the password you picked and priviledges on the `dhcpnsdb` database. 

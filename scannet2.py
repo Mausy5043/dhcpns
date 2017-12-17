@@ -42,9 +42,11 @@ def lstvssql(hostlist):
         if (rsl is None):
           if DEBUG:
             print("MAC is not found in DB")
+          # {endif}
           if (line[5] != 0):
             if DEBUG:
               print("... new host found")
+            # {endif}
             # & host is pingable -> new host, so add it to the DB
             cmd = ('INSERT INTO lantbl '
                    '(mac, ipoctet4, lastseen, nodename) '
@@ -58,9 +60,11 @@ def lstvssql(hostlist):
         else:
           if DEBUG:
             print("MAC is present in DB")
+          # {endif}
           if (line[5] != 0):
             if DEBUG:
               print("... updating existing hostdata")
+            # {endif}
             if nodename != "*":
               cmd = ('UPDATE lantbl '
                      'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
@@ -71,6 +75,7 @@ def lstvssql(hostlist):
                      'SET lastseen = %s, ipoctet4 = %s '
                      'WHERE mac = %s ')
               dat = (lastseen, ipoctet4, mac)
+            # {endif}
             cur.execute(cmd, dat)
             con.commit()
             line[10] = lastseen
@@ -102,6 +107,7 @@ def lstvssql(hostlist):
             line[10] = rsl[2]
         else:
           print(nodename, mac, ipoctet4)
+        # {endif}
       # {endif}
     # {endfor}
   except mdb.Error as e:
@@ -337,17 +343,20 @@ if __name__ == '__main__':
       print("List length (LEASES): ", len(hostlist), "\n")
       print("----------leased HOSTLIST----------")
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
+    # {endif}
 
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
       print("List length (ARP)   : ", len(hostlist), "\n")
       print("----------HOSTLIST with arp----------")
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
+    # {endif}
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
     if DEBUG:
       print("----------sorted HOSTLIST----------")
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
+    # {endif}
 
     hostlist = pingpong(hostlist)  # search for signs of life
 
@@ -358,6 +367,7 @@ if __name__ == '__main__':
     for idx, line in enumerate(hostlist):
       if len(hostlist[idx][1]) > lenhost:
         lenhost = len(hostlist[idx][1])
+      # {endif}
     # {endfor}
 
     for idx, line in enumerate(hostlist):
@@ -366,24 +376,17 @@ if __name__ == '__main__':
       spc2 = ' ' * (17 - len(line[3]) + 1)
       if (PRINTPATTERN == 1):
         print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9])
+      # {endif}
       if (PRINTPATTERN == 2):
         print(line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10])
+      # {endif}
     # {endfor}
 
   except Exception as e:
     if DEBUG:
       print("Unexpected error:")
-    # red(e.message)
+    # {endif}
     syslog.syslog(syslog.LOG_ALERT, e.__doc__)
     syslog_trace(traceback.format_exc())
     raise
   # {endtry}
-
-"""
-1. Get list of current leases
-2. Get contents of arp cache
-3. Check against DB entries
-4. Ping all hosts in the list
-5. Update DB with (1) new hosts and (2) last seen times
-#
-"""

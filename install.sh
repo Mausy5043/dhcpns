@@ -34,4 +34,6 @@ fi
 # MySQL support (python3)
 install_package "mysql-client"
 install_package "libmariadbclient-dev"
+install_package "traceroute"
+install_package "nmap"
 sudo pip3 install mysqlclient
