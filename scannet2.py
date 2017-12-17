@@ -335,6 +335,8 @@ if __name__ == '__main__':
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
       print("List length (ARP)   : ", len(hostlist), "\n")
+      print("----------HOSTLIST----------")
+      print(hostlist)
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
     if DEBUG:
