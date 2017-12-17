@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DNSMASQCONF=/etc/dnsmasq.conf
-DNSMASQDIR=/etc/dnsmasq.d
+DNSMASQCONF="/etc/dnsmasq.conf"
+DNSMASQDIR="/etc/dnsmasq.d"
 
 # abort if dnsmasq is not properly installed
 if [ ! -f "${DNSMASQCONF}" ]; then
@@ -9,4 +9,4 @@ if [ ! -f "${DNSMASQCONF}" ]; then
   exit 1
 fi
 
-cat "${DNSMASQCONF}" "${DNSMASQDIR}/*" | egrep "^dhcp-leasefile" | awk -F "=" '{print $2}'
+cat "${DNSMASQCONF}" "${DNSMASQDIR}"/* | egrep "^dhcp-leasefile" | awk -F "=" '{print $2}'
