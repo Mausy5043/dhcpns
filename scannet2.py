@@ -147,7 +147,7 @@ def getleases(listsize, ux):
     print("Existing leases:")
   for idx, line in enumerate(entries):
     if DEBUG:
-      print(idx, line)
+      print(idx, len(line), line)
     # {endif}
     hostlist.extend([[None] * listsize])
     items = line.split()
