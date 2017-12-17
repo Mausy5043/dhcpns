@@ -169,7 +169,7 @@ def getleases(listsize, ux):
     hostlist[idx][3] = items[1]
     # IP
     hostlist[idx][0] = items[2]
-    hostlist[idx][8] = items[2].split('.')[3]
+    hostlist[idx][8] = int(items[2].split('.')[3])
     # hostname
     hostlist[idx][1] = items[3]
   # {endfor}
