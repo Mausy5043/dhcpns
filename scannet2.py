@@ -232,16 +232,20 @@ def pingpong(hostlist):
   """
   for idx, line in enumerate(hostlist):
     ip = line[0]
+    # ping once to check for live host:
     pong = list(map(float, ping(ip, 1)))
+    # if we get an answer ping 10 more times to get some stats:
     if pong[0] > 0:
       pong = list(map(float, ping(ip, 10)))
+    # {endif}
     hostlist[idx][4] = pong[0]
     hostlist[idx][5] = pong[1]
     hostlist[idx][6] = pong[2]
     hostlist[idx][7] = pong[3]
     if (pong[0] == 0) and (hostlist[idx][9] is None):
-        hostlist[idx][9] = 0
-
+      hostlist[idx][9] = 0
+    # {endif}
+  # {endfor}
   return hostlist
 
 def ping(ip, cnt):
@@ -255,30 +259,37 @@ def ping(ip, cnt):
   # get last line of output
   line = output.decode("utf-8").splitlines()[-1]
   if DEBUG:
-    print(line)
+    print(ip, line)
   # {endif}
   # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
   if (len(line) < 12):
     line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
+  # {endif}
 
-  # get third field
+  # get fourth field...
   field3 = line.split()[3]
   # ==> 1.069/1.257/1.777/0.302
-  # split the field at "/"
+  # ...split the field at "/"...
   result = field3.split('/')
   # ===> ['1.036', '1.224', '1.496', '0.171']
   return result
 
 def getkey(item):
-  """'row' in list to sort by"""
+  """
+  'row' in list to sort by
+  """
   return item[8]
 
 def red(text):
-  """Format a string to make it show red on an ANSI terminal"""
+  """
+  Format a string to make it show red on an ANSI terminal
+  """
   print("\033[91m {}\033[00m" .format(text))
 
 def syslog_trace(trace):
-  """Log a python stack trace to syslog"""
+  """
+  Log a python stack trace to syslog
+  """
   log_lines = trace.split('\n')
   for line in log_lines:
     if line:
