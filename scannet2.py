@@ -123,10 +123,13 @@ def findleasesfile(filename):
   output = output.decode("utf-8").strip('\n')
   if output:
     filename = output
+  # {endif}
   if DEBUG:
     print("Leases file: {0}".format(filename))
+  # {endif}
   if not os.path.isfile(filename):
     raise OSError("File not found")
+  # {endif}
   return filename
 
 def getleases(listsize, ux):
@@ -146,19 +149,21 @@ def getleases(listsize, ux):
   if DEBUG:
     print("Existing leases:")
   for idx, line in enumerate(entries):
-    if DEBUG:
-      print(idx, len(line), line)
+    if line:
+      if DEBUG:
+        print(idx, len(line), line)
+      # {endif}
+      hostlist.extend([[None] * listsize])
+      items = line.split()
+      # T2R (expiry time)
+      hostlist[idx][9] = (int(items[0]) - ux)/60
+      # MAC
+      hostlist[idx][3] = items[1]
+      # IP
+      hostlist[idx][0] = items[2]
+      # hostname
+      hostlist[idx][1] = items[3]
     # {endif}
-    hostlist.extend([[None] * listsize])
-    items = line.split()
-    # T2R (expiry time)
-    hostlist[idx][9] = (int(items[0]) - ux)/60
-    # MAC
-    hostlist[idx][3] = items[1]
-    # IP
-    hostlist[idx][0] = items[2]
-    # hostname
-    hostlist[idx][1] = items[3]
   # {endfor}
   return hostlist
 
@@ -172,17 +177,20 @@ def getarp(hostlist):
   if DEBUG:
     print(err)
     print(output)
+  # {endif}
   entries = output.splitlines()
 
   # make a list of the IPs
   column0list = [hostlist[i][0] for i in range(len(hostlist))]
   if DEBUG:
     print("\t%s" % column0list)
+  # {endif}
 
   # Add `arp` data to the array
   for idx, line in enumerate(entries):
     if DEBUG:
       print(idx, line)
+    # {endif}
     items = line.split()
     # IP according to arp
     ip = items[1][1:-1]
@@ -201,6 +209,7 @@ def getarp(hostlist):
       hostlist[adx][2] = items[0]
       hostlist[adx][9] = -1
       column0list.extend([hostlist[i][0]])
+    # {endtry}
 
   return hostlist
 
