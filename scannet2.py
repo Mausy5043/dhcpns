@@ -138,14 +138,13 @@ def getleases(listsize, ux):
   hostlist = []
 
   with open(leasesfile, 'r') as f:
-    cat = f.read().strip('\n')
+    cat = f.read().decode("utf-8").strip('\n')
   # {endwith}
   entries = cat.splitlines()
-  if DEBUG:
-    print(entries)
-  # {endif}
 
   # fill the array with data from the leases
+  if DEBUG:
+    print("Existing leases:")
   for idx, line in enumerate(entries):
     if DEBUG:
       print(idx, line)
