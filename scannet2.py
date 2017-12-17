@@ -138,7 +138,7 @@ def getleases(listsize, ux):
   hostlist = []
 
   with open(leasesfile, 'r') as f:
-    cat = f.read().decode("utf-8").strip('\n')
+    cat = f.read().strip('\n')
   # {endwith}
   entries = cat.splitlines()
 
