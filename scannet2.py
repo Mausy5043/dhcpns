@@ -160,6 +160,7 @@ def getleases(listsize, ux):
     hostlist[idx][3] = items[1]
     # IP
     hostlist[idx][0] = items[2]
+    hostlist[idx][8] = items[2].split('.')[3]
     # hostname
     hostlist[idx][1] = items[3]
   # {endfor}
@@ -331,16 +332,18 @@ if __name__ == '__main__':
     hostlist = getleases(11, ux)  # parameter is size of the array
     if DEBUG:
       print("List length (LEASES): ", len(hostlist), "\n")
+      print("----------leased HOSTLIST----------")
+      print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
 
     hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
     if DEBUG:
       print("List length (ARP)   : ", len(hostlist), "\n")
-      print("----------HOSTLIST----------")
+      print("----------HOSTLIST with arp----------")
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
 
     hostlist = sorted(hostlist, key=getkey)  # sort the list by the 4th IP octet
     if DEBUG:
-      print("----------HOSTLIST----------")
+      print("----------sorted HOSTLIST----------")
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
 
     hostlist = pingpong(hostlist)  # search for signs of life
