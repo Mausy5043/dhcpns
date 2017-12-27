@@ -163,16 +163,21 @@ def getleases(listsize, ux):
     # {endif}
     items = line.split()
     if items[0] != "duid":
-      hostlist.extend([[None] * listsize])
-      # T2R (expiry time)
-      hostlist[idx][9] = (int(items[0]) - ux)/60
-      # MAC
-      hostlist[idx][3] = items[1]
-      # IP
-      hostlist[idx][0] = items[2]
-      hostlist[idx][8] = int(items[2].split('.')[3])
-      # hostname
-      hostlist[idx][1] = items[3]
+      try:
+        hostlist.extend([[None] * listsize])
+        # T2R (expiry time)
+        hostlist[idx][9] = (int(items[0]) - ux)/60
+        # MAC
+        hostlist[idx][3] = items[1]
+        # IP
+        hostlist[idx][0] = items[2]
+        hostlist[idx][8] = int(items[2].split('.')[3])
+        # hostname
+        hostlist[idx][1] = items[3]
+      except:
+        hostlist.pop()
+        pass
+      # {endtry}
     # {endif}
   # {endfor}
   return hostlist
