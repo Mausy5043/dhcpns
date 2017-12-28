@@ -65,7 +65,7 @@ def lstvssql(hostlist):
             if DEBUG:
               print("... updating existing hostdata")
             # {endif}
-            if nodename != "*":
+            if (nodename != "*") and (nodename != "?"):
               cmd = ('UPDATE lantbl '
                      'SET lastseen = %s, nodename = %s, ipoctet4 = %s '
                      'WHERE mac = %s ')
