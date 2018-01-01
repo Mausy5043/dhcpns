@@ -2,13 +2,13 @@
 
 """Scans the LAN for all hosts and reports some statistics about them"""
 
-import MySQLdb as mdb
 import subprocess as sp
 import os
 import sys
 import syslog
 import time
 import traceback
+import MySQLdb as mdb
 
 MYDIR = os.path.dirname(os.path.realpath(__file__))
 
