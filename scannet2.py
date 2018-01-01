@@ -32,18 +32,18 @@ def lstvssql(hostlist):
       ipoctet4 = str(line[8]).zfill(3)
       nodename = line[1]
       # check if MAC exists in DB
-      if (len(mac) == 17):
+      if len(mac) == 17:
         # MAC is valid: search for it in the DB
         cmd = ('SELECT * '
                'FROM lantbl '
                'WHERE mac="' + mac + '"')
         cur.execute(cmd)
         rsl = cur.fetchone()
-        if (rsl is None):
+        if rsl is None:
           if DEBUG:
             print("MAC is not found in DB")
           # {endif}
-          if (line[5] != 0):  # valid ping
+          if line[5] != 0:  # valid ping
             if DEBUG:
               print("... new host found")
             # {endif}
@@ -61,7 +61,7 @@ def lstvssql(hostlist):
           if DEBUG:
             print("MAC is present in DB")
           # {endif}
-          if (line[5] != 0):  # valid ping
+          if line[5] != 0:  # valid ping
             if DEBUG:
               print("... updating existing hostdata")
             # {endif}
@@ -91,7 +91,7 @@ def lstvssql(hostlist):
         # {endif}
       else:
         # sometimes nodename = "?" and mac = "<incomplete>"
-        if (nodename == "?"):
+        if nodename == "?":
           # then lookup the last user of the IP-address
           cmd = ('SELECT * '
                  'FROM lantbl '
@@ -100,7 +100,7 @@ def lstvssql(hostlist):
           rsl = cur.fetchone()
           # example output
           # rsl <= ('00:00:00:00:00:00', '182', datetime.datetime(2015, 10, 18, 14, 45, 26), 'hostname')
-          if (rsl is not None):
+          if rsl is not None:
             line[1] = "-" + rsl[3]
             line[2] = "-" + rsl[3]
             line[3] = "-" + rsl[0]
@@ -279,7 +279,7 @@ def ping(ip, cnt):
     print(ip, line)
   # {endif}
   # => rtt min/avg/max/mdev = 1.069/1.257/1.777/0.302 ms
-  if (len(line) < 12):
+  if len(line) < 12:
     line = 'rtt min/avg/max/mdev = 0.00/0.00/0.00/0.00 ms'
   # {endif}
 
@@ -319,10 +319,10 @@ if __name__ == '__main__':
   PRINTPATTERN = 2
   # check for commandline parameters and take action
   for parm in sys.argv:
-    if (parm == '-t'):
+    if parm == '-t':
       PRINTPATTERN = 1
       print("show timings")
-    elif (parm == '-d'):
+    elif parm == '-d':
       DEBUG = True
       print("debugging on")
     # {endif}
@@ -381,10 +381,10 @@ if __name__ == '__main__':
       spc0 = ' ' * (16 - len(line[0]))
       spc1 = ' ' * (lenhost - len(line[1]) + 1)
       spc2 = ' ' * (17 - len(line[3]) + 1)
-      if (PRINTPATTERN == 1):
+      if PRINTPATTERN == 1:
         print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9])
       # {endif}
-      if (PRINTPATTERN == 2):
+      if PRINTPATTERN == 2:
         print(line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10])
       # {endif}
     # {endfor}
