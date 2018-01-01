@@ -196,6 +196,7 @@ def getarp(hostlist):
   output = output.decode("utf-8").strip('\n')
   if DEBUG:
     print("Cached by arp:")
+  # {endif}
   if DEBUG:
     print(err.decode("utf-8").strip('\n'))
     print(output)
@@ -314,6 +315,7 @@ def syslog_trace(trace):
   for line in log_lines:
     if line:
       syslog.syslog(syslog.LOG_ALERT, line)
+    # {endif}
 
 
 if __name__ == '__main__':
