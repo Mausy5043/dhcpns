@@ -99,7 +99,10 @@ def lstvssql(hostlist):
           cur.execute(cmd)
           rsl = cur.fetchone()
           # example output
-          # rsl <= ('00:00:00:00:00:00', '182', datetime.datetime(2015, 10, 18, 14, 45, 26), 'hostname')
+          # rsl <= ('00:00:00:00:00:00',
+          #         '182',
+          #         datetime.datetime(2015, 10, 18, 14, 45, 26),
+          #         'hostname')
           if rsl is not None:
             line[1] = "-" + rsl[3]
             line[2] = "-" + rsl[3]
@@ -352,7 +355,9 @@ if __name__ == '__main__':
       print('\n'.join('{}: {}'.format(*k) for k in enumerate(hostlist)))
     # {endif}
 
-    hostlist = getarp(hostlist)  # add the hosts that no longer have a lease but are still present in the arp cache
+    # add the hosts that no longer have a lease
+    # but are still present in the arp cache
+    hostlist = getarp(hostlist)
     if DEBUG:
       print("List length (ARP)   : ", len(hostlist), "\n")
       print("----------HOSTLIST with arp----------")
@@ -382,7 +387,8 @@ if __name__ == '__main__':
       spc1 = ' ' * (lenhost - len(line[1]) + 1)
       spc2 = ' ' * (17 - len(line[3]) + 1)
       if PRINTPATTERN == 1:
-        print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5], "\tstdev=", line[7], "\tT2R=", line[9])
+        print(line[0], spc0, line[1], spc1, line[3], spc2, "avg=", line[5],
+              "\tstdev=", line[7], "\tT2R=", line[9])
       # {endif}
       if PRINTPATTERN == 2:
         print(line[0], spc0, line[1], spc1, line[3], spc2, "last seen :", line[10])
